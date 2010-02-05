@@ -22,7 +22,7 @@ RPAL INTERPRETER:
    Find the documentation in docs folder:
    	lexical rules - lexer.pdf
 	RPAL grammer  - rpal.grammar.pdf
-	Standardizing Ruls for converting a AST to Standardized Tree(ST) - subtxfms.pdf
+	Standardizing Rules for converting a AST to Standardized Tree(ST) - subtxfms.pdf
 	Control Stack Environment Machine(CSE Machine) to run the standardized gamma expression extracted from standardized tree - csem.pdf
 	Notes on recursion and handling them in CSE Machine - recursion_rules_in_rpal.pdf
 
