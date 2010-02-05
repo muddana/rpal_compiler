@@ -28,3 +28,7 @@ RPAL INTERPRETER:
 
 	Also included in the docs folder is another intrepreter of RPAL. Install this version of rpal to test the code for all test cases
 
+
+TODO:
+  - Fix the issue with "tiny" program from tests
+  - clean up code.
