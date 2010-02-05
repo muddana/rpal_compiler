@@ -26,7 +26,7 @@ RPAL INTERPRETER:
 	Control Stack Environment Machine(CSE Machine) to run the standardized gamma expression extracted from standardized tree - csem.pdf
 	Notes on recursion and handling them in CSE Machine - recursion_rules_in_rpal.pdf
 
-	Also included in the docs folder is another intrepreter of RPAL. Install this version of rpal to test the code for all test cases
+	Also included in the docs folder is another intrepreter of RPAL. Install this version of rpal to test the code for all test cases. There is a perl script to test the output of this interpreter with my interpreter, so need this interpreter to test the current project. To test after installing the interpreter: make test
 
 
 TODO:
