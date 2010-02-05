@@ -179,24 +179,14 @@
     void _standardize(){
       TreeNode *p, *e, *e1, *e2, *x, *x1, *x2, *n, *temp, *new_temp;
 
-      //cout <<  "enter standardize: " <<  to_s() << endl;
-
-      /*if(lft != NULL){
-	lft->standardize();
-	if(lft->rgt != NULL){
-	  lft->rgt->standardize();
-	}
-	};*/
       if(lft != NULL){
 	lft->standardize();
       };
       if(rgt != NULL){
 	rgt->standardize();
       };
-      //cout <<  "start standardizing: " <<  to_s() << endl;
       switch(_type){
       case LET :
-	//cout << "Standardizing LET" << endl;
 	if(lft->_type != BINDING){
 	  throw "Subtree not standardised: case LET";
 	}
@@ -265,7 +255,6 @@
 	};
 	break;
       case LAMBDA:
-	//cout << "Standardizing LAMBDA" << endl;
 	temp = lft;
 	while(temp->rgt->rgt != NULL){
 	  new_temp = new TreeNode(LAMBDA);

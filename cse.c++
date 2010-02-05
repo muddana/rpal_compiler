@@ -7,11 +7,8 @@ public:
   };
 
   Control* lookup(string symbol){
-    //cout << "looking up for : " << symbol << " in : " << id() << endl;
-    //pretty_print();
     map<string, Control *>::iterator it;
     it = symbol_table.find(symbol);
-    //cout << "it is: " << (*it).second->to_s() << endl;
     if(it == symbol_table.end())
        return _parent->lookup(symbol);
     else
@@ -31,8 +28,7 @@ public:
   map<string, Control *> symbol_table;
 private:
   int _id;
-  Environment *_parent;
-  //should have all the primitive env data like common functions like -, + etc.
+  Environment *_parent; //should have all the primitive env data like common functions like -, + etc.
 };
 
 //control(stack) stack environment
@@ -50,10 +46,8 @@ public:
   void run(TreeNode *root){
     init_control_stack(root);
     _run();
-    //cout << "Final CSE state: " << endl;
-    //print_control_and_stack();
     if(!_control.empty() || env_stack.size() != 1){
-      cout << "Interpretor Error: stack is not empty of the env_stack is not empty" << endl;
+      cout << "Interpretor Error: stack/env_stack is not empty" << endl;
     }
     cout << endl;
   };
@@ -62,8 +56,6 @@ private:
   Environment *temp_env;
   Environment *create_new_env(){
     temp_env = new Environment(env_count);
-    //cout << "env_count is: " << env_count << endl;
-    //cout << "ENV id is : " << temp_env->id() << " and env_count is: " << env_count  <<endl;
     env_hash[env_count] =  temp_env;
     env_count++;
     return temp_env;
@@ -86,31 +78,23 @@ private:
       _stack.push(temp.top());
       temp.pop();
     };
-    //while(!env_stack.empty()){
-      
-    //};
   };
+
   //preparing the control structures and putting the first control structure on the control
   void init_control_stack(TreeNode *root){
     deltas->push_back(root_delta);
     root->flatten(root_delta, deltas);
-    //cout << "about to print the control structures" << endl;
-    //for(int i=0; i< deltas->size(); i++) 
-    //  deltas->at(i)->pretty_print();
-    //begin processing the control structures
-    //push the env control on the _control and _stack
     _control.push_back(new Control(Control::ENV, 0, false));
     _stack.push(new Control(Control::ENV, 0, false));
     for(int i=0;i<root_delta->_control_struct->size();i++){
       _control.push_back(root_delta->_control_struct->at(i));
     };
 
-    //build a new environment for the control structure put on control
     env_stack.push(create_new_env());
     env_stack.top()->assign_parent(primitive_env);
-    //setting the variable curr_env
     curr_env = env_stack.top();
   };
+
   void _run(){
     Control *temp = NULL;
     Control *curr_control = NULL;
@@ -118,10 +102,8 @@ private:
     Environment *new_env = NULL;
     int delta_index = -1;
     while(!_control.empty()){
-      //print_control_and_stack();
       curr_control = _control.at(_control.size()-1); 
       temp = NULL;
-      //cout << "Type: " << curr_control->type() << endl;
       switch(curr_control->type()){
       case Control::INTEGER :
       case Control::STRING :
@@ -133,16 +115,11 @@ private:
 	break ;
       case Control::NAME:
 	if(is_inbuilt_function(curr_control->_variables.front())){
-	  //cout << "Inbuilt function found : " << curr_control->value() << endl;
 	  put_on_stack_pop_from_control(curr_control);
 	}
 	else{
-	  //cout << "Looking up for : " << curr_control->_variables.front() << endl;
 	  temp = curr_env->lookup(curr_control->_variables.front());
-	  //cout << "Search ended " << endl;
 	  if(temp != NULL){
-	    //cout << "Found : " << endl;
-	    //cout <<  temp << endl;
 	    put_on_stack_pop_from_control(temp);
 	  }
 	  else{
@@ -164,15 +141,11 @@ private:
 	rator = _stack.top() ;
 	_stack.pop();
 	if( rator->type() == Control::LAMBDA ){ //CSE Rule 4 and Rule 11
-	  //creating a new env
 	  new_env = create_new_env();
-	  //assigning a new parent under which it was defined
 	  new_env->assign_parent(env_hash.find(rator->linked_env_id())->second);
-	  //setting new env as curr env
 	  curr_env = new_env ;
 	  
 	  if( rator->_variables.size() == 1 ){
-	    //cout << "In ENV: " << curr_env->id() << " Binding : " << rator->_variables.at(0) << " with _stack.top() value: " << _stack.top()->to_s() << endl ;
 	    curr_env->symbol_table[rator->_variables.at(0)] = _stack.top();
 	    _stack.pop();
 	  }
@@ -194,8 +167,6 @@ private:
 	  };
 	  
 	  env_stack.push(curr_env);
-	  //begin processing the control structures
-	  //push the env control on the _control and _stack
 	   _control.push_back(new Control(Control::ENV, curr_env->id(), false));
 	   _stack.push(new Control(Control::ENV, curr_env->id(), false));
 	   for(int i=0;i<deltas->at(rator->index())->_control_struct->size();i++){
@@ -228,7 +199,6 @@ private:
 	  }
 	}
 	else{
-	  //cout << "Going for apply rator, type:  " << rator->type() << " value:%" << rator->to_s() << "%" << endl;
 	  apply_rator(rator);
 	};
 	break;
@@ -557,8 +527,8 @@ private:
     
     _stack.push(result) ;
   };
+
   void escape_print_string(string print_str){
-    //acutally printing the value
     for( int i = 0 ; i < print_str.length() ; i++ ){
 	char ch1 = print_str.at(i) ;
 	  if( ch1 == '\\'){
@@ -942,7 +912,6 @@ void Control::add_control(int type, string value, vector<string> *variables, Con
     throw "UnHandled Control found!?";
     break;
   };
-  //cout << temp->to_s()<< "control stuct size:" <<  << endl;
   _control_struct->push_back(temp);
 };
 
@@ -953,7 +922,6 @@ void Control::add_control(int type, string value, vector<string> *variables, Con
       cout << "Not a delta node, cannot pretty print" << endl;
       throw "pretty_print called on delta node";
     };
-    //cout << "size of control struct: " << _control_struct->size() << endl;
     cout << to_s() << " ";
     for(int i=0; i< _control_struct->size(); i++){
       cout << _control_struct->at(i)->to_s() << " " ;

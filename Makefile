@@ -1,8 +1,6 @@
 p1:	
-	g++ parser.c++ -o p1
-cl: 
-	rm -f p1;
-run:
-	./p1
+	g++ parser.c++ -o ./bin/p1
+clean: 
+	rm -f ./bin/p1;
 test:
-	perl ./difftest.pl -1 "rpal FILE" -2 "./p1 -r FILE" -t ../../rpal/interpreters/rpal/tests/
+	perl ./difftest.pl -1 "rpal FILE" -2 "./bin/p1 -r FILE" -t ./tests/

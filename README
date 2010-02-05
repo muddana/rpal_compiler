@@ -1,0 +1,30 @@
+RPAL INTERPRETER:
+
+- To Compile:
+
+  >> make
+
+
+- Usage: ./bin/p1 [-ast] [-st] [-r] filename
+
+  -ast generates  Abstract Syntax Tree
+  -st  generates Standardized Tree
+  -r   runs the code
+
+
+- Sample program:
+  	 let Sum(A) = Psum (A,Order A )
+	     	    where rec Psum (T,N) = N eq 0 -> 0
+             	                     | Psum(T,N-1)+T N
+         in Print ( Sum (1,2,3,4,5) )
+
+- Documentation:
+   Find the documentation in docs folder:
+   	lexical rules - lexer.pdf
+	RPAL grammer  - rpal.grammar.pdf
+	Standardizing Ruls for converting a AST to Standardized Tree(ST) - subtxfms.pdf
+	Control Stack Environment Machine(CSE Machine) to run the standardized gamma expression extracted from standardized tree - csem.pdf
+	Notes on recursion and handling them in CSE Machine - recursion_rules_in_rpal.pdf
+
+	Also included in the docs folder is another intrepreter of RPAL. Install this version of rpal to test the code for all test cases
+

@@ -136,7 +136,6 @@ public:
 	
       case STRING :
 	return _value +"";
-	//return _variables.front() ;
 	
       case INTEGER :
 	str = _value + "" ;
@@ -185,8 +184,6 @@ public:
     }
   };
   
-  //constructor move it to the top of public methods
-  //make sure this is set only by DELTA nodes
   Control(Control::Type type, int index){
     if(type != Control::DELTA){
       cout << "Control::DELTA 's constructor called for : " << type << endl;
@@ -198,7 +195,6 @@ public:
     _control_struct = new vector<Control *>();
   };
   
-  //make sure this is used by only LAMBDA nodes
   Control(Control::Type type,vector<string> *variables, Control *del_ptr, int delta_index){
     _type = type;//Control::LAMBDA
     _index = delta_index;
@@ -236,10 +232,6 @@ public:
 
   //make sure this is used for AUG && NIL && YSTAR
   Control(Control::Type type){
-    //if(type != Control::AUG && type != Control::NIL && type != Control::YSTAR && type != Control::DUMMY){
-    //  cout << "Control::AUG || NIL || YSTAR || DUMMY 's constructor called for : " << type << endl;
-    //  throw "Control::AUG  || NIL || YSTAR || DUMMY 's constructor called for : ";
-    //};
     _type = type;
   };
   vector<Control *> *_control_struct;
