@@ -17,38 +17,37 @@
 
 class RpalParser{
  public:
-  stack<TreeNode *> *parse(ifstream *input_file){
-    lexer = new RpalLexer(input_file); 
+  RpalParser(){
+    
+  };
+  stack<TreeNode *> *parse(RpalLexer *lexer){
+    this->lexer = lexer;
     _parse();
     return &ast_stack;
   };
 
  private:
-
-  RpalLexer *lexer;  
+  RpalLexer *lexer;
   Token *token;//curr_token
   Token *next_token;//for_peeking purposes
   stack<TreeNode *> ast_stack;
 
-
+  //every rpal prog is just an expression, ours is Rule: E
   void _parse(){
-    //read the first token
     read_next_token();
     read_next_token();
-    //every rpal prog is just an expression
     E();
     if(ast_stack.size() != 1){
       cout << "Oops more than 1 element on the stack" << endl;
       throw "Parse Error: Stack not empty at the end of parsing";
     }
-    //also need to check if the input is also over
     if(next_token->type() != Token::ENDOFFILE){
       cout << "Input still remaining" << endl;
       throw "Parse Error: Input still remaining.";
     }
   };
 
-  //always one token ahead feel like a good decision for a LL(1) parser
+  //always one token ahead, a good decision for a LL(1) parser for peeking puposes
   void read_next_token(){
     token = next_token;
     next_token  = lexer->next_token();
@@ -65,7 +64,6 @@ E    -> ’let’ D ’in’ E                          => ’let’
       D();
       ReadToken("in");
       E();
-      //build tree with let and two items on stack from D and E respectively
       build_tree(TreeNode::LET, 2);
     }
     else if(token->value() == "fn"){
@@ -544,6 +542,7 @@ D    -> Da ’within’ D                           => ’within’
 int main(int argc, char *argv[]){
   ifstream input_file;
   stack<TreeNode *> *ast_stack;
+  RpalLexer *lexer = NULL; 
   RpalParser *parser = new RpalParser();
   CSE *cse_machine = new CSE();
 
@@ -554,17 +553,18 @@ int main(int argc, char *argv[]){
       cout << "File \"" << argv[2] << "\" not found!" << endl;
       return 0;
     };
+    lexer = new RpalLexer(&input_file);
     if(strcmp(argv[1], "-ast") == 0){
-      ast_stack = parser->parse(&input_file);
+      ast_stack = parser->parse(lexer);
       ast_stack->top()->pretty_print();
     }
     else if(strcmp(argv[1], "-st") == 0){
-      ast_stack = parser->parse(&input_file);
+      ast_stack = parser->parse(lexer);
       ast_stack->top()->standardize();
       ast_stack->top()->pretty_print();
     }      
     else{
-      ast_stack = parser->parse(&input_file);
+      ast_stack = parser->parse(lexer);
       ast_stack->top()->standardize();
       cse_machine->run(ast_stack->top());
     }

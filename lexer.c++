@@ -14,17 +14,13 @@
 
 class Token{
 public:
-  Token(){
+  Token(): _value(""), _type(0){
   };
-  Token(string token_value){
-    _value = token_value;
+  Token(string token_value):_value(token_value), _type(0){
   };
-  Token(int type_of_tok){
-    _type = type_of_tok;
+  Token(int type_of_tok): _value(""),_type(type_of_tok){
   };
-  Token(int type_of_tok, string token_value){
-    _value = token_value;
-    _type = type_of_tok;
+  Token(int type_of_tok, string token_value): _value(token_value),_type(type_of_tok){
   };
   enum Types { IDENTIFIER = 0,
 	       INTEGER = 1,
@@ -34,38 +30,45 @@ public:
 	       PUNCTION = 5,
 	       ENDOFFILE = 6
               };
-  int type(){
+  int type() const{
     return _type;
   };
-  string value(){
+  string value() const{
     return _value;
   };
-  //need to move to private
-  string _value;
-  int _type;
 private:
+  const string _value;
+  const int _type;
 };
 
 class RpalLexer{
 public:
-  //static const int MAX_LINE_LENGTH = 1024;
   RpalLexer(){
-    init_ops();
-    init_tokens();
+    setup();
   };
   RpalLexer(ifstream *fileHandle){
+    setup();
     fileHndl = fileHandle;
-    init_ops();
-    init_tokens();
   };
   Token *next_token(){
     return getScreenedNextToken();
   };
 private:
 
-  void handleEOF(){
+  bool invalidState(){
+    return false;
+  };
+
+  void setup(){
+    initOperators();
+    initTokens();
+  };
+  void handleEOF(void(RpalLexer::*handler)(int,std::string)){
+    if(invalidState())
+      return;
+
     if(isEOF(fileHndl->peek()))
-      throw EOF_ENCOUNTERED;
+      (this->*handler)(Token::ENDOFFILE, "EOF");      
   };
 
   //handles operators
@@ -77,11 +80,15 @@ private:
   //          | ’{’ | ’}’ | ’"’ | ’‘’ | ’?’;
   //vector<char> operators(_ops,_ops +  sizeof(_ops)/sizeof(char));
   void handleOperators(){
+    if(invalidState())
+      return;
+
     if(isOperatorSymbol(fileHndl->peek())){
       do{
-	read_next_char_to_stack();
+	readNextCharToStack();
       }while(isOperatorSymbol(fileHndl->peek()));
-      extractToken(Token::OPERATOR);
+      string tokData = extractTokData();
+      buildManageTokens(Token::OPERATOR, tokData);
     }
   };
     
@@ -91,11 +98,15 @@ private:
   //       -> ’;’ => ’;’
   //       -> ’,’ => ’,’;
   void handlePunction(){
-    char next_char = fileHndl->peek();
-    if( isPunction(next_char) )
+    if(invalidState())
+      return;
+	
+    char nextChar = fileHndl->peek();
+    if( isPunction(nextChar) )
       {
-	read_next_char_to_stack();
-	extractToken(Token::PUNCTION);
+	readNextCharToStack();
+	string tokData = extractTokData();
+	buildManageTokens(Token::PUNCTION, tokData);
       }
   };
 
@@ -109,13 +120,16 @@ private:
 
   //ascii 39 for \' (single quote)
   void handleStrings(){
-    char read_char;
+    if(invalidState())
+      return;
+    
+    char readChar;
     if(fileHndl->peek() == 39){
       do{
 	//cout << "Read char is : " << fileHndl->peek() << endl;
 	if(fileHndl->peek() != '\\'){//(read_char != '\''){
-	  read_next_char_to_stack();
-	  read_char = fileHndl->peek();
+	  readNextCharToStack();
+	  readChar = fileHndl->peek();
 	}
 	else{
 	  getEscapeSequence();
@@ -125,8 +139,9 @@ private:
       //upon leaving the loop the next token should be end of string(single quote) 
 	//cout << "coming out of the get string loop, fileHndl->peek() : " << fileHndl->peek() << " and read_char : "  << read_char  << endl ;
 	if(fileHndl->peek() == 39){
-	read_next_char_to_stack();
-	extractToken(Token::STRING);
+	readNextCharToStack();
+	string tokData = extractTokData();
+        buildManageTokens(Token::STRING, tokData);
       }
       else{ 
 	cout << endl << "Expected ' but found :" << (char)fileHndl->peek() << endl;
@@ -137,10 +152,10 @@ private:
   
   void getEscapeSequence(){
     if(fileHndl->peek() == '\\'){
-      read_next_char_to_stack();
+      readNextCharToStack();
       char read_char = fileHndl->peek();
       if(read_char == 't' || read_char == 'n' || read_char == '\\' || read_char == '\''){
-	read_next_char_to_stack();
+	readNextCharToStack();
       }
       else{
 	throw "illegal token: illegal escape character";
@@ -149,20 +164,24 @@ private:
   };
 
   void handleComments(){
-    char read_char = fileHndl->peek();
-    if(read_char == '/'){
-      read_next_char_to_stack();
+    if(invalidState())
+      return;
+    
+    char readChar = fileHndl->peek();
+    if(readChar == '/'){
+      readNextCharToStack();
       if(fileHndl->peek() == '/'){
-	read_next_char_to_stack();
+	readNextCharToStack();
 	while(isCommentCharacter(fileHndl->peek())){
-	  read_next_char_to_stack();
+	  readNextCharToStack();
 	}
 	//after the loop check for end of line character else exception
 	// ascii 10 
 	if(fileHndl->peek() == '\n') 
 	  {
-	    read_next_char_to_stack();
-	    extractToken(Token::DELETE);
+	    readNextCharToStack();
+	    string tokData = extractTokData();
+	    buildManageTokens(Token::DELETE, tokData);
 	  }
 	else{
 	  cout << "End of line character for comment not found";
@@ -170,7 +189,7 @@ private:
 	}
       }
       else{
-	fileHndl->putback(read_char);//read_char has to be always '/' 
+	fileHndl->putback(readChar);//read_char has to be always '/' 
 	//i think i have to empty the stack there case here is if the  has a single '/'
 	charStack.pop();
       }
@@ -180,12 +199,16 @@ private:
   //handles integers
   //Integer -> Digit+ => ’<INTEGER>’;
   void handleIntegers(){
+    if(invalidState())
+      return;
+
     if(isDigit(fileHndl->peek()))
       {
 	do{
-	  read_next_char_to_stack();
+	  readNextCharToStack();
 	}while(isDigit(fileHndl->peek()));
-	extractToken(Token::INTEGER);
+	string tokData = extractTokData();
+	buildManageTokens(Token::INTEGER, tokData);
       }
   };
   //handles whitespaces, Eof and tab spaces
@@ -193,9 +216,10 @@ private:
   void handleSpaces(){
     if (isWhiteSpaceOrEOL(fileHndl->peek())){
     do{
-      read_next_char_to_stack();
+      readNextCharToStack();
     }while(isWhiteSpaceOrEOL(fileHndl->peek()));
-    extractToken(Token::DELETE);
+    string tokData = extractTokData();
+    buildManageTokens(Token::DELETE, tokData);
     };
   };
   //handles identifiers
@@ -205,33 +229,32 @@ private:
     if(isLetter(fileHndl->peek()))
       {
 	do{
-	  read_next_char_to_stack();
+	  readNextCharToStack();
 	}
 	while(isLetter(fileHndl->peek()) || isDigit(fileHndl->peek()) || fileHndl->peek() == '_');
 	//empty the stack build a token and manage it
-	extractToken(Token::IDENTIFIER);
+	string tokData =  extractTokData();
+	buildManageTokens(Token::IDENTIFIER, tokData);
       }
     
   };
-  void read_next_char_to_stack(){
+  void readNextCharToStack(){
     char temp[1];
     fileHndl->read(temp, 1);
     charStack.push(*temp);
   };
-  //need to pass the type of identifier to be passed to buildAndManageTokens
-  void extractToken(int token_type){
-    string tempStr = "";
+  //need to pass the type of identifier to be passed to buildManageTokens
+  string extractTokData(){
+    string tokData = "";
     while(!charStack.empty())
       {
-	tempStr.push_back(charStack.top());
+	tokData.push_back(charStack.top());
 	charStack.pop();
       }
-    reverse(tempStr.begin(), tempStr.end());
-    buildAndManageTokens(token_type, tempStr);
-    throw TOKEN_FOUND;
-    
+    reverse(tokData.begin(), tokData.end());
+    return tokData;
   };
-  void buildAndManageTokens(int token_type, string temp){
+  void buildManageTokens(int token_type, string temp){
 	prev_tok = curr_tok;
 	curr_tok = new Token(token_type, temp);
   };
@@ -261,12 +284,12 @@ private:
     else
       return false;
   };
-  void init_ops(){
+  void initOperators(){
     string op_str = "+,-,*,<,>,&,.,@,/,:,=,~,|,$,!,#,%,^,_,[,],{,},\",`,?";
     tokenize(op_str, ',', &operator_list);
   };
   
-  void init_tokens(){
+  void initTokens(){
     prev_tok = NULL;
     curr_tok = NULL;
   };
@@ -301,8 +324,12 @@ private:
   };
 
   void getNextToken(){
+    currState = SEARCHING;
+    void(RpalLexer::*eofHandler)(int,std::string);
+    eofHandler = &RpalLexer::buildManageTokens;
+    //need to implement fall though
     try{
-      handleEOF();
+      handleEOF(eofHandler);
       handleIdentifier();
       handleIntegers();
       handleComments();
@@ -312,19 +339,12 @@ private:
       handlePunction();
     }
     catch(int ex_num){
-      if(ex_num == TOKEN_FOUND){ 
-	return; 
-      }
-      else if(ex_num == EOF_ENCOUNTERED){
-	buildAndManageTokens(Token::ENDOFFILE, "EOF");
-	return;
-      }
-      else{
-	cout << "Lexer Error code :"  << ex_num << endl;
-	throw ex_num;
-      };
+      cout << "Lexer Error code :"  << ex_num << endl;
+      throw ex_num;
     }
-    catch(...){ cout << "UnExpected Exception" << endl; exit(0);}
+    catch(...){ 
+      cout << "UnExpected Exception" << endl;
+    }
   };
   Token *getScreenedNextToken(){
     do{
@@ -340,13 +360,13 @@ private:
       return true;
   };
   //members
+  enum States {TOKENFOUND = 0, SEARCHING = 1};
+  States currState;
   Token *curr_tok, *prev_tok, *next_tok;
   vector<string> progContent;//fileContent
   ifstream *fileHndl;
   stack<char> charStack;//to store the input characters while making decisions
   vector<string> operator_list;
   char _ops[];
-  static const int TOKEN_FOUND = 0;
-  static const int EOF_ENCOUNTERED = 1;
 };
 
