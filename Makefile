@@ -1,5 +1,5 @@
 p1:	
-	g++ parser.c++ -o ./bin/p1
+	g++ main.c++ -o ./bin/p1
 clean: 
 	rm -f ./bin/p1;
 test:
