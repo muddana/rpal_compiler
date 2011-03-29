@@ -3,14 +3,11 @@
 class RpalLexer{
 public:
 
-  RpalLexer(ifstream *fileHandle);//: fileHndl(fileHandle){
-  //    setup();
-  //};
+  RpalLexer(ifstream *fileHandle);
+
   
-  const Token *next_token();//{
-    //  return getScreenedNextToken();
-    //};
-  
+  const Token *nextToken();
+
 private:
 
   //handles End Of File 
@@ -337,6 +334,7 @@ private:
     else
       return true;
   };
+
   //members
   enum States {TOKENFOUND = 0, SEARCHING = 1};
   States currState;

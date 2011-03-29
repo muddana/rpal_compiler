@@ -12,11 +12,10 @@
 
 #include "parser.h"
 
-RpalParser::RpalParser(){
+RpalParser::RpalParser(RpalLexer* lexer): _lexer(lexer){
 };
 
-stack<TreeNode *> *RpalParser::parse(RpalLexer *lexer){
-  this->lexer = lexer;
+stack<TreeNode *> *RpalParser::parse(){
   _parse();
   return &ast_stack;
 };

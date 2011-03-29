@@ -1,36 +1,5 @@
 #include<map>
 
-class Environment{
-public:
-  void assign_parent(Environment *parent){
-    _parent = parent;
-  };
-
-  Control* lookup(string symbol){
-    map<string, Control *>::iterator it;
-    it = symbol_table.find(symbol);
-    if(it == symbol_table.end())
-       return _parent->lookup(symbol);
-    else
-      return (*it).second;
-  };
-  Environment(int id){
-    _id = id;
-  };
-  int id(){
-    return _id;
-  };
-  void pretty_print(){
-    map<string, Control *>::iterator it;
-    for ( it=symbol_table.begin() ; it != symbol_table.end(); it++ )
-      cout << (*it).first << " => " << (*it).second->to_s() << endl;
-  };
-  map<string, Control *> symbol_table;
-private:
-  int _id;
-  Environment *_parent; //should have all the primitive env data like common functions like -, + etc.
-};
-
 //control(stack) stack environment
 class CSE{
 public:
@@ -60,7 +29,7 @@ private:
     env_count++;
     return temp_env;
   };
-
+  void treeFlattener(TreeNode* node, Control *delta,vector<Control *> *deltas);
   void print_control_and_stack(){
     for(int i=0; i < _control.size() ; i++){
       cout << _control.at(i)->to_s() << " " ;
@@ -83,7 +52,7 @@ private:
   //preparing the control structures and putting the first control structure on the control
   void init_control_stack(TreeNode *root){
     deltas->push_back(root_delta);
-    root->flatten(root_delta, deltas);
+    treeFlattener(root,root_delta, deltas);
     _control.push_back(new Control(Control::ENV, 0, false));
     _stack.push(new Control(Control::ENV, 0, false));
     for(int i=0;i<root_delta->_control_struct->size();i++){
@@ -113,7 +82,7 @@ private:
       case Control::YSTAR :
 	put_on_stack_pop_from_control(curr_control);
 	break ;
-      case Control::NAME:
+      case Control::IDENTIFIER:
 	if(is_inbuilt_function(curr_control->_variables.front())){
 	  put_on_stack_pop_from_control(curr_control);
 	}
@@ -641,7 +610,7 @@ private:
       };
     }
     else if(rator->_variables.front() == "Conc"){ //could have check for string here
-      Control *conc_lambda = new Control(Control::NAME);
+      Control *conc_lambda = new Control(Control::IDENTIFIER);
       conc_lambda->_variables.push_back("Conclambda");
       conc_lambda->_variables.push_back(_stack.top()->value());
       _stack.pop();
@@ -707,7 +676,120 @@ private:
 };
 
 
-void TreeNode::flatten(Control *delta,vector<Control *> *deltas){
+void CSE::treeFlattener(TreeNode* node, Control *delta,vector<Control *> *deltas){
+
+  //used to handle the recursive retrieval of delta and to restore the delta after the new delta is handled
+  Control *temp_del_ptr = NULL;
+  
+  vector<string> *variables = NULL;//new vector<string>();
+  if(node->type() == TreeNode::LAMBDA){
+    variables = new vector<string>();
+    //now fill the variables
+    if(TreeNode::IDENTIFIER == node->lft->_type){
+      variables->push_back(node->lft->_value);
+    }
+    else if(TreeNode::COMMA == node->lft->_type){
+      TreeNode *temp = node->lft->lft;
+      while(NULL != temp){
+	variables->push_back(temp->_value);
+	temp = temp->rgt;
+      };
+    }
+    else{
+      cout << "Expected Identifier or Comma, but din't find" << endl;
+    };
+    //creating new delta
+    temp_del_ptr = new Control(Control::DELTA, deltas->size());
+    //adding to the deltas list
+    deltas->push_back(temp_del_ptr);
+    //adding the current lamda to control structure and referencing it to the newly created delta
+    delta->add_control(node->type(), node->value(), variables, temp_del_ptr, deltas->size());
+    
+    //donot need to flatten the lft child since these are variable(or) variables
+    //flatenning the body of lambda
+    treeFlattener(node->lft->rgt, temp_del_ptr, deltas);
+    
+    if(NULL != node->rgt)
+      treeFlattener(node->rgt,delta, deltas);
+  }
+  else if(node->type() == TreeNode::TERNARY){
+    Control *delta_then = new Control(Control::DELTA, deltas->size());
+    deltas->push_back(delta_then);
+    delta->_control_struct->push_back(new Control(Control::DELTA, deltas->size()-1)); //delta then
+    if(node->lft->rgt->_type == TreeNode::TERNARY){
+      treeFlattener(node->lft->rgt, delta_then, deltas);
+    }
+    else{
+      vector<string> *temp_variables = NULL;
+      if(node->lft->rgt->_type == TreeNode::TAU){
+	TreeNode *temp = node->lft->rgt->lft;
+	temp_variables = new vector<string>;
+	while(temp!= NULL){
+	  temp_variables->push_back(temp->_value); // will these be any useful
+	  temp = temp->rgt;
+	}
+      }
+      delta_then->add_control(node->lft->rgt->_type, node->lft->rgt->_value, temp_variables, delta_then, deltas->size());
+      if(node->lft->rgt->lft != NULL)
+	treeFlattener(node->lft->rgt->lft, delta_then, deltas);
+    }
+    
+    Control *delta_else = new Control(Control::DELTA, deltas->size());
+    deltas->push_back(delta_else);
+    delta->_control_struct->push_back(new Control(Control::DELTA, deltas->size()-1)); //delta else
+
+    if(node->lft->rgt->rgt->_type == TreeNode::TERNARY){
+      treeFlattener(node->lft->rgt->rgt,delta_else, deltas);
+    }
+    else{
+      vector<string> *temp_variables = NULL;
+      if(node->lft->rgt->rgt->_type == TreeNode::TAU){
+	TreeNode *temp = node->lft->rgt->rgt->lft;
+	temp_variables = new vector<string>;
+	while(temp!= NULL){
+	  temp_variables->push_back(temp->_value); // will these be any useful
+	  temp = temp->rgt;
+	}
+      }
+      delta_else->add_control(node->lft->rgt->rgt->_type, node->lft->rgt->rgt->_value, temp_variables, delta_else, deltas->size());
+      if(node->lft->rgt->rgt->lft != NULL)
+	treeFlattener(node->lft->rgt->rgt->lft,delta_else, deltas);      
+    };
+    
+    Control *beta = new Control(Control::BETA);
+    delta->_control_struct->push_back(new Control(Control::BETA, "beta"));
+    delta->add_control(node->lft->_type, node->lft->_value, NULL, NULL, deltas->size());
+    if(node->lft->lft != NULL)
+      treeFlattener(node->lft->lft, delta, deltas);
+  }
+  else{
+    //checking for speacial cases like TAU
+    if(node->type() == TreeNode::TAU){
+      variables = new vector<string>();
+      TreeNode *temp = node->lft;
+      while(temp!= NULL){
+	variables->push_back(temp->_value);//will these be any useful ?
+	temp = temp->rgt;
+      };
+    };
+
+    //create a new control and flatten urself. in case of non LAMBDA node
+    delta->add_control(node->type(), node->value(), variables, temp_del_ptr, deltas->size());
+    //flatten you left kid and then the right kid
+    if(NULL != node->lft){
+      treeFlattener(node->lft, delta, deltas);
+      //if(lft->rgt != NULL){
+      //	lft->rgt->flatten(delta, deltas);
+      //}
+    };
+    if(NULL != node->rgt){
+      treeFlattener(node->rgt, delta,deltas);
+    };
+  };
+};
+
+
+/*void TreeNode::flatten(Control *delta,vector<Control *> *deltas){
 
   //used to handle the recursive retrieval of delta and to restore the delta after the new delta is handled
   Control *temp_del_ptr = NULL;
@@ -818,113 +900,4 @@ void TreeNode::flatten(Control *delta,vector<Control *> *deltas){
     };
   };
 };
-
-void Control::add_control(int type, string value, vector<string> *variables, Control* del_ptr, int deltas_size){ // cheating this type had to be Treenode::Type 
-    //has to store appropriate control depeneding on the type and value of the tree node
-  int tau_count;
-  Control *temp = NULL;
-  switch(type){
-  case TreeNode::LAMBDA:
-    temp = new Control(Control::LAMBDA, variables, del_ptr, deltas_size-1 );
-    break;
-  case TreeNode::INTEGER:
-    temp = new Control(Control::INTEGER, value);
-    break;
-  case TreeNode::MULTIPLY:
-    temp = new Control(Control::MULTIPLY, value);
-    break;
-  case TreeNode::PLUS:
-    temp = new Control(Control::ADD, value);
-    break;
-  case TreeNode::MINUS:
-    temp = new Control(Control::SUBTRACT, value);
-    break;
-  case TreeNode::DIVIDE:
-    temp = new Control(Control::DIVIDE, value);
-    break;
-  case TreeNode::GAMMA:
-    temp = new Control(Control::GAMMA, value);
-    break;
-  case TreeNode::IDENTIFIER:
-    temp = new Control(value, Control::NAME);
-    break;
-  case TreeNode::STRING:
-    //cout << " Value is : "<< value << endl;
-    temp = new Control(Control::STRING, value.substr(1,value.length()-2));
-    break;
-  case TreeNode::TAU:
-    if(variables!=NULL)
-      tau_count = variables->size();
-    else
-      cout << "TAU add_control NULL variables sent!" << endl;
-    temp = new Control(Control::TAU, tau_count, false);
-    break;
-  case TreeNode::AUG:
-    temp = new Control(Control::AUG);
-    break;
-  case TreeNode::NIL:
-    temp = new Control(Control::NIL);
-    break;
-  case TreeNode::YSTAR:
-    temp = new Control(Control::YSTAR);
-    break;
-  case TreeNode::AND_LOGICAL:
-    temp = new Control(Control::AND_LOGICAL);
-    break;
-  case TreeNode::OR:
-    temp = new Control(Control::OR);
-    break;
-  case TreeNode::NE:
-    temp = new Control(Control::NE);
-    break;
-  case TreeNode::EQ:
-    temp = new Control(Control::EQ);
-    break;
-  case TreeNode::LS:
-    temp = new Control(Control::LS);
-    break;
-  case TreeNode::LE:
-    temp = new Control(Control::LE);
-    break;
-  case TreeNode::GR:
-    temp = new Control(Control::GR);
-    break;
-  case TreeNode::GE:
-    temp = new Control(Control::GE);
-    break;
-  case TreeNode::NEG:
-    temp = new Control(Control::NEG);
-    break;
-  case TreeNode::FALSE:
-    temp = new Control(Control::FALSE);
-    break;
-  case TreeNode::TRUE:
-    temp = new Control(Control::TRUE);
-    break;
-  case TreeNode::NOT:
-    temp = new Control(Control::NOT);
-    break;
-  case TreeNode::DUMMY:
-    temp = new Control(Control::DUMMY);
-    break;
-  default:
-    cout << "UnHandled TreeNode/Control found!?, TreeNode value:" << value << " type:" << type << endl;
-    throw "UnHandled Control found!?";
-    break;
-  };
-  _control_struct->push_back(temp);
-};
-
-
-//should this be avaiblable for the delta node ?
-  void Control::pretty_print(){
-    if(_type!=Control::DELTA){
-      cout << "Not a delta node, cannot pretty print" << endl;
-      throw "pretty_print called on delta node";
-    };
-    cout << to_s() << " ";
-    for(int i=0; i< _control_struct->size(); i++){
-      cout << _control_struct->at(i)->to_s() << " " ;
-    };
-    cout << endl;
-  };
+*/

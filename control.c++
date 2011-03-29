@@ -1,12 +1,9 @@
-class Control{
-public:
-  void add_control(int , string,  vector<string> *, Control*, int); //cheating this int has to be TreeNode::Type
-  void pretty_print();
+#include "control.h"
 
-  enum Type{
+/*enum Control::Type{
     ENV = 1 ,
     DELTA = 2 ,
-    NAME = 3 ,
+    IDENTIFIER = 3 ,
     LAMBDA = 4 ,
     GAMMA = 5 ,
     AUG = 6 ,
@@ -37,8 +34,8 @@ public:
     STRING = 31 ,
     INTEGER = 32 ,
     TUPLE = 33
-  };
-  string to_s()
+    };*/
+  string Control::to_s()
   {
     //cout << "Type: " << _type << endl; 
     string str ;
@@ -48,7 +45,7 @@ public:
 	str = "<D" + itos(_index) + ">" ;
 	return str;
 	
-      case NAME :
+      case IDENTIFIER :
 	return _variables.at(0);//.front() ; //not sure y front() is not working
 	
       case LAMBDA :
@@ -168,7 +165,7 @@ public:
       }
   };
 
-  Control( Control *cntrl )
+  Control::Control( Control *cntrl )
   {
     _index = cntrl->index() ;
     _value = cntrl->value() ;
@@ -184,8 +181,8 @@ public:
     }
   };
   
-  Control(Control::Type type, int index){
-    if(type != Control::DELTA){
+  Control::Control(Control::Type type, int index){
+    if(Control::DELTA != type){
       cout << "Control::DELTA 's constructor called for : " << type << endl;
       throw "Control::DELTA 's constructor called for : ";
     };
@@ -195,7 +192,7 @@ public:
     _control_struct = new vector<Control *>();
   };
   
-  Control(Control::Type type,vector<string> *variables, Control *del_ptr, int delta_index){
+  Control::Control(Control::Type type,vector<string> *variables, Control *del_ptr, int delta_index){
     _type = type;//Control::LAMBDA
     _index = delta_index;
     if(variables != NULL){
@@ -205,7 +202,7 @@ public:
     }
   };
   //For TAU and ENV
-  Control(Control::Type type, int index, bool watever){
+  Control::Control(Control::Type type, int index, bool watever){
     if(type != Control::TAU && type != Control::ENV){
       cout << "Control::TAU 's constructor called for : " << type << endl;
       throw "Control::TAU 's constructor called for : ";
@@ -217,54 +214,155 @@ public:
   };
 
   //make sure this is for NAME nodes only
-  Control(string var_value, Control::Type type ){
+  Control::Control(string var_value, Control::Type type ){
     _type = type;
     _variables.push_back(var_value);
   };
   
-  Control(Control::Type type, string value){
+  Control::Control(Control::Type type, string value){
     _type = type;
     _value = value;
   };
   
-  Control(){
+  Control::Control(){
   };
 
   //make sure this is used for AUG && NIL && YSTAR
-  Control(Control::Type type){
+  Control::Control(Control::Type type){
     _type = type;
   };
-  vector<Control *> *_control_struct;
-  Type type(){
+
+Control::Type Control::type(){
     return _type;
   };
-  string value(){
+  string Control::value(){
     return _value;
   };
-  int index(){
+  int Control::index(){
    return _index;
   }
-  void set_linked_env_id(int id){
+  void Control::set_linked_env_id(int id){
     _linked_env_id = id;
   };
-  int linked_env_id(){
+  int Control::linked_env_id(){
     return _linked_env_id;
   };
-  void set_type(Type type){
+void Control::set_type(Type type){
     _type = type;
   };
-  void set_value(string value){
+void Control::set_value(string value){
     _value = value;
   }
-  vector<string> _variables;
-  vector<Control *> _tuples;
-private:
-  int _linked_env_id;
-  Type _type;
-  int _index;
-  string _value;//need to verify the option to keep the _value as a string
-  
-  //following used only by deltas and lambdas for pointing to vector of control(structures) and the deltas respectively
-  Control *_delta;
-  
+
+
+
+//should this be avaiblable for the delta node ?
+void Control::pretty_print(){
+  if(_type!=Control::DELTA){
+    cout << "Not a delta node, cannot pretty print" << endl;
+    throw "pretty_print called on delta node";
+  };
+  cout << to_s() << " ";
+  for(int i=0; i< _control_struct->size(); i++){
+    cout << _control_struct->at(i)->to_s() << " " ;
+  };
+  cout << endl;
 };
+
+
+void Control::add_control(int type, string value, vector<string> *variables, Control* del_ptr, int deltas_size){ // cheating this type had to be Treenode::Type 
+    //has to store appropriate control depeneding on the type and value of the tree node
+  int tau_count;
+  Control *temp = NULL;
+  switch(type){
+  case TreeNode::LAMBDA:
+    temp = new Control(Control::LAMBDA, variables, del_ptr, deltas_size-1 );
+    break;
+  case TreeNode::INTEGER:
+    temp = new Control(Control::INTEGER, value);
+    break;
+  case TreeNode::MULTIPLY:
+    temp = new Control(Control::MULTIPLY, value);
+    break;
+  case TreeNode::ADD:
+    temp = new Control(Control::ADD, value);
+    break;
+  case TreeNode::SUBTRACT:
+    temp = new Control(Control::SUBTRACT, value);
+    break;
+  case TreeNode::DIVIDE:
+    temp = new Control(Control::DIVIDE, value);
+    break;
+  case TreeNode::GAMMA:
+    temp = new Control(Control::GAMMA, value);
+    break;
+  case TreeNode::IDENTIFIER:
+    temp = new Control(value, Control::IDENTIFIER);
+    break;
+  case TreeNode::STRING:
+    //cout << " Value is : "<< value << endl;
+    temp = new Control(Control::STRING, value.substr(1,value.length()-2));
+    break;
+  case TreeNode::TAU:
+    if(variables!=NULL)
+      tau_count = variables->size();
+    else
+      cout << "TAU add_control NULL variables sent!" << endl;
+    temp = new Control(Control::TAU, tau_count, false);
+    break;
+  case TreeNode::AUG:
+    temp = new Control(Control::AUG);
+    break;
+  case TreeNode::NIL:
+    temp = new Control(Control::NIL);
+    break;
+  case TreeNode::YSTAR:
+    temp = new Control(Control::YSTAR);
+    break;
+  case TreeNode::AND_LOGICAL:
+    temp = new Control(Control::AND_LOGICAL);
+    break;
+  case TreeNode::OR:
+    temp = new Control(Control::OR);
+    break;
+  case TreeNode::NE:
+    temp = new Control(Control::NE);
+    break;
+  case TreeNode::EQ:
+    temp = new Control(Control::EQ);
+    break;
+  case TreeNode::LS:
+    temp = new Control(Control::LS);
+    break;
+  case TreeNode::LE:
+    temp = new Control(Control::LE);
+    break;
+  case TreeNode::GR:
+    temp = new Control(Control::GR);
+    break;
+  case TreeNode::GE:
+    temp = new Control(Control::GE);
+    break;
+  case TreeNode::NEG:
+    temp = new Control(Control::NEG);
+    break;
+  case TreeNode::FALSE:
+    temp = new Control(Control::FALSE);
+    break;
+  case TreeNode::TRUE:
+    temp = new Control(Control::TRUE);
+    break;
+  case TreeNode::NOT:
+    temp = new Control(Control::NOT);
+    break;
+  case TreeNode::DUMMY:
+    temp = new Control(Control::DUMMY);
+    break;
+  default:
+    cout << "UnHandled Control/Control found!?, Control value:" << value << " type:" << type << endl;
+    throw "UnHandled Control found!?";
+    break;
+  };
+  _control_struct->push_back(temp);
+};
+

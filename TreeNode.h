@@ -13,7 +13,7 @@
 //first child next sibling notation of a n-ry tree
   class TreeNode{
   public:
-    void flatten(Control *, vector<Control *> *);
+    //void flatten(Control *, vector<Control *> *);
 
     enum Type {
       LAMBDA = 1 ,
@@ -30,8 +30,8 @@
       LE = 12 ,
       EQ = 13 ,
       NE = 14 ,
-      PLUS = 15 ,
-      MINUS = 16 ,
+      ADD = 15 ,
+      SUBTRACT = 16 ,
       NEG = 17 ,
       MULTIPLY = 18 ,
       DIVIDE = 19 ,
@@ -71,16 +71,22 @@
     void standardize();
     void addChild(TreeNode *child);
 
+    string value() const{
+      return _value;
+    };
+    Type type() const{
+      return _type;
+    };
     string _value;
     Type _type;
   private:
     void _standardize(){
       TreeNode *p, *e, *e1, *e2, *x, *x1, *x2, *n, *temp, *new_temp;
 
-      if(lft != NULL){
+      if(NULL != lft){
 	lft->standardize();
       };
-      if(rgt != NULL){
+      if(NULL != rgt){
 	rgt->standardize();
       };
       switch(_type){
@@ -187,16 +193,16 @@
 	e1->rgt = NULL;
 	break;
       };
-      //cout << "END of standardizing:" << to_s() << endl; 
     };
+
     void _pretty_print(int level) const{
       for(int i=0; i <level; i++){
 	cout << ".";
       }
       cout << to_s() << " " << endl;
-      if(lft != NULL)
+      if(NULL != lft)
 	lft->_pretty_print(level + 1);
-      if(rgt != NULL)
+      if(NULL != rgt)
 	rgt->_pretty_print(level);
     };
 

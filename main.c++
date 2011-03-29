@@ -2,19 +2,18 @@
 
 #include "token.c++"
 #include "lexer.c++"
-#include "control.c++"
 #include "TreeNode.c++"
+#include "control.c++"
 #include "parser.c++"
+#include "environment.c++"
 #include "cse.c++"
+#include "rpal.c++"
+
 
 int main(int argc, char *argv[]){
   try{
   ifstream input_file;
-  stack<TreeNode *> *ast_stack;
-  // = NULL; 
-  RpalParser *parser = new RpalParser();
-  CSE *cse_machine = new CSE();
-
+  
   if(argc >= 3){
     string file_name = argv[2];
     input_file.open(argv[2]);
@@ -23,20 +22,19 @@ int main(int argc, char *argv[]){
       return 0;
     };
 
-    RpalLexer * const lexer = new RpalLexer(&input_file);
+    RpalLexer* lexer = new RpalLexer(&input_file);
+    RpalParser* parser = new RpalParser(lexer);
+
+    Rpal rpal(parser);
+
     if(strcmp(argv[1], "-ast") == 0){
-      ast_stack = parser->parse(lexer);
-      ast_stack->top()->pretty_print();
+      rpal.printAST();
     }
     else if(strcmp(argv[1], "-st") == 0){
-      ast_stack = parser->parse(lexer);
-      ast_stack->top()->standardize();
-      ast_stack->top()->pretty_print();
+      rpal.printST();
     }      
     else{
-      ast_stack = parser->parse(lexer);
-      ast_stack->top()->standardize();
-      cse_machine->run(ast_stack->top());
+      rpal.execute();
     }
       input_file.close();
   }else{
@@ -44,7 +42,7 @@ int main(int argc, char *argv[]){
   };
   }
   catch(exception& ex){
-    //cout << ex.what() << endl;
+    cout << ex.what() << endl;
   }
     return 0;
 };

@@ -1,15 +1,11 @@
 class RpalParser{
  public:
   //every rpal prog is just an expression, ours is Rule: E
-  stack<TreeNode *> *parse(RpalLexer * const lexer);//{
-    //  this->lexer = lexer;
-    //_parse();
-    //return &ast_stack;
-    //};
-  RpalParser();
+  stack<TreeNode *> *parse();
+  RpalParser(RpalLexer* lexer);
 
  private:
-  RpalLexer * lexer;
+  RpalLexer * _lexer;
   const Token *token;//curr_token
   const Token *next_token;//for_peeking purposes
   stack<TreeNode *> ast_stack;
@@ -197,7 +193,7 @@ D    -> Da ’within’ D                           => ’within’
   //always one token ahead, a good decision for a LL(1) parser for peeking puposes
   void RpalParser::read_next_token(){
     token = next_token;
-    next_token  = lexer->next_token();
+    next_token  = _lexer->nextToken();
   };
 
 /*# Expressions ############################################
@@ -402,7 +398,7 @@ A    -> A ’+’ At                                => ’+’
 	cout << "Expecting + or - but recieved: " <<  temp_tok_value << endl;
 	throw "Expecting + or - but recieved: " +  temp_tok_value;
       };
-      build_tree(temp_tok_value == "+" ? TreeNode::PLUS : TreeNode::MINUS , 2);
+      build_tree(temp_tok_value == "+" ? TreeNode::ADD : TreeNode::SUBTRACT , 2);
     };
   };
   /*
@@ -506,12 +502,12 @@ Rn   -> ’<IDENTIFIER>’
 	ReadToken(token->value());
       }
       else{
-	cout << "unknown token" + itos(token->type()) << endl;
+	cout << "Unknown token" + itos(token->type()) + ", value: " + token->value() << endl;
 	throw("Token Not Recognized: " + token->value());
       }
     }
     else{
-      cout << "unknown token" << endl;
+      cout << "Unknown token" + itos(token->type()) + ", value: " + token->value() << endl;
       throw("Token Not Recognized: " + token->value());
     };
   };

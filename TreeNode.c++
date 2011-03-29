@@ -37,9 +37,9 @@ string TreeNode::to_s() const{
       return "eq" ;
     case NE :
       return "ne" ;
-    case PLUS :
+    case ADD :
       return "+" ;		  
-    case MINUS :
+    case SUBTRACT :
       return "-" ;
     case NEG :
       return "neg" ;
@@ -96,12 +96,12 @@ void TreeNode::standardize(){
 };
 
 void TreeNode::addChild(TreeNode *child){
-  if(lft == NULL){
+  if(NULL == lft){
 	lft = child;
   }
   else{
     TreeNode *temp = lft;
-    while(temp->rgt != NULL){
+    while(NULL != temp->rgt){
       temp = temp->rgt;
     };
     temp->rgt = child;

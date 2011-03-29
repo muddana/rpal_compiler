@@ -16,6 +16,6 @@ RpalLexer::RpalLexer(ifstream *fileHandle): fileHndl(fileHandle){
   setup();
 };
 
-const Token * RpalLexer::next_token(){
+const Token * RpalLexer::nextToken(){
   return getScreenedNextToken();
 };
