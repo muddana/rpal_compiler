@@ -3,13 +3,13 @@
 class RpalLexer{
 public:
 
- RpalLexer(ifstream *fileHandle): fileHndl(fileHandle){
-    setup();
-  };
+  RpalLexer(ifstream *fileHandle);//: fileHndl(fileHandle){
+  //    setup();
+  //};
   
-  Token *next_token(){
-    return getScreenedNextToken();
-  };
+  const Token *next_token();//{
+    //  return getScreenedNextToken();
+    //};
   
 private:
 
@@ -198,7 +198,7 @@ private:
     }
   };
 
-  bool invalidState(){
+  bool invalidState() const{
     if(TOKENFOUND == currState)
       return true;
     else
@@ -215,6 +215,7 @@ private:
     fileHndl->read(temp, 1);
     charStack.push(*temp);
   };
+
   //need to pass the type of identifier to be passed to buildManageTokens
   string extractTokData(){
     string tokData = "";
@@ -226,38 +227,42 @@ private:
     reverse(tokData.begin(), tokData.end());
     return tokData;
   };
+
   void buildManageTokens(int token_type, string temp){
     //cout << "building tok, type: " << itos(token_type) << " value: " << temp << endl;
     currState = TOKENFOUND;
     prev_tok = curr_tok;
     curr_tok = new Token(token_type, temp);
   };
-  bool isEOF(int c)
-  {
+
+  bool isEOF(int c) const{
     if(c == EOF)
       return true;
     else
       return false;
   };
-  bool isLetter(int c){
+  bool isLetter(int c) const{
     if((c >= 65 && c <= 90) || (c >= 97 && c<= 122) )
 	return true;
     else
       return false;
   };
-  bool isDigit(int c){
+
+  bool isDigit(int c) const{
     if( c >= 48 && c <= 57)
       return true;
     else
       return false;
   };
-  bool isWhiteSpaceOrEOL(char c){
+
+  bool isWhiteSpaceOrEOL(char c) const{
     //9 for horizontal tab, 32 space, 10 for Line feed
-    if(c == 9 || c == 32 || c == 10)
+    if( 9 == c ||  32 == c || 10 == c)
       return true;
     else
       return false;
   };
+
   void initOperators(){
     string op_str = "+,-,*,<,>,&,.,@,/,:,=,~,|,$,!,#,%,^,_,[,],{,},\",`,?";
     tokenize(op_str, ',', &operator_list);
@@ -270,7 +275,7 @@ private:
 
   //TODO not sure why the == for two strings and also the find on operator_list not working
   //inline functions
-  inline bool isOperatorSymbol(int next_char){
+  inline bool isOperatorSymbol(int next_char) const{
     int i=0;
     bool is_operator = false;
     while(i < operator_list.size()){
@@ -284,14 +289,15 @@ private:
     return is_operator;
   };
   
-  inline bool isPunction(char next_char){
-    if(next_char == '(' || next_char == ')' || next_char == ';' || next_char == ',')
+  inline bool isPunction(char next_char) const{
+    if('(' == next_char || ')' == next_char || ';' == next_char || ',' == next_char)
       return true;
     else
       return false;
   };
+
   inline bool isCommentCharacter(char chr){
-    if(chr == '\'' || isPunction(chr) || chr == '\\' || chr == ' ' || chr == '\t' || isLetter(chr) ||  isDigit(chr) || isOperatorSymbol(chr))
+    if('\'' == chr || isPunction(chr) || '\\' == chr || ' ' == chr || '\t' == chr || isLetter(chr) ||  isDigit(chr) || isOperatorSymbol(chr))
       return true;
       else
 	return false;
@@ -318,14 +324,14 @@ private:
       cout << "UnExpected Exception" << endl;
     }
   };
-  Token *getScreenedNextToken(){
+  const Token *getScreenedNextToken(){
     do{
       getNextToken();
     }while(!is_useful_token(curr_tok));
     return curr_tok;
   };
-  bool is_useful_token(Token *tok){
-    if(tok->type() == Token::DELETE){
+  bool is_useful_token(const Token *tok) const{
+    if(Token::DELETE == tok->type()){
       return false;
     }
     else
@@ -334,7 +340,7 @@ private:
   //members
   enum States {TOKENFOUND = 0, SEARCHING = 1};
   States currState;
-  Token *curr_tok, *prev_tok, *next_tok;
+  const Token *curr_tok, *prev_tok, *next_tok;
   vector<string> progContent;//fileContent
   ifstream * fileHndl;
   stack<char> charStack;//to store the input characters while making decisions

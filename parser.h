@@ -1,16 +1,17 @@
 class RpalParser{
  public:
   //every rpal prog is just an expression, ours is Rule: E
-  stack<TreeNode *> *parse(RpalLexer *lexer){
-    this->lexer = lexer;
-    _parse();
-    return &ast_stack;
-  };
+  stack<TreeNode *> *parse(RpalLexer * const lexer);//{
+    //  this->lexer = lexer;
+    //_parse();
+    //return &ast_stack;
+    //};
+  RpalParser();
 
  private:
-  RpalLexer *lexer;
-  Token *token;//curr_token
-  Token *next_token;//for_peeking purposes
+  RpalLexer * lexer;
+  const Token *token;//curr_token
+  const Token *next_token;//for_peeking purposes
   stack<TreeNode *> ast_stack;
 
   void _parse();

@@ -10,14 +10,12 @@
 //
 //
 
-//RpalLexer::RpalLexer(){
-//  _setup();
-//};
+#include "lexer.h"
 
-//RpalLexer::RpalLexer(ifstream *fileHandle): fileHndl(fileHandle){
-//  setup();
-//};
+RpalLexer::RpalLexer(ifstream *fileHandle): fileHndl(fileHandle){
+  setup();
+};
 
-//RpalLexer::Token *next_token(){
-//  return getScreenedNextToken();
-//};
+const Token * RpalLexer::next_token(){
+  return getScreenedNextToken();
+};

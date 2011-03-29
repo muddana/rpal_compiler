@@ -1,9 +1,10 @@
-    //pre-order treversal first root then the left and right child recursively
-void TreeNode::pretty_print(){
+#include "TreeNode.h"
+
+//pre-order treversal first root then the left and right child recursively
+void TreeNode::pretty_print() const{
   _pretty_print(0);
 };
-string TreeNode::to_s()
-{
+string TreeNode::to_s() const{
   switch( _type )
     {
     case LET :
@@ -94,7 +95,7 @@ void TreeNode::standardize(){
   _standardize();
 };
 
-void TreeNode::add_child(TreeNode *child){
+void TreeNode::addChild(TreeNode *child){
   if(lft == NULL){
 	lft = child;
   }

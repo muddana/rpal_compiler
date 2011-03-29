@@ -55,21 +55,23 @@
       INTEGER = 37,
       YSTAR = 38
     };
-    
     TreeNode *lft,*rgt;
     TreeNode(string val, Type type): _value(val) , _type(type){
+      //_value = val;
+      //_type = type;
       _init_lft_rgt();
     };
     TreeNode(Type type): _type(type){
+      //_type = type;
       _init_lft_rgt();
     };
     //pre-order treversal first root then the left and right child recursively
-    void pretty_print() const;
+    void pretty_print();
 
-    string to_s() const;
+    string to_s();
 
     void standardize();
-    void addChild(TreeNode *child);
+    void add_child(TreeNode *child);
 
     string _value;
     Type _type;
@@ -168,9 +170,9 @@
 	lft = new TreeNode(COMMA);
 	lft->rgt = new TreeNode(TAU);
 	while(temp!=NULL){
-	  lft->rgt->addChild(temp->lft->rgt);//adding children to the tau node
+	  lft->rgt->add_child(temp->lft->rgt);//adding children to the tau node
 	  temp->lft->rgt = NULL;
-	  lft->addChild(temp->lft);//adding children to the comma node
+	  lft->add_child(temp->lft);//adding children to the comma node
 	  temp = temp->rgt;
 	};
 	break;
@@ -189,7 +191,7 @@
       };
       //cout << "END of standardizing:" << to_s() << endl; 
     };
-    void _pretty_print(int level) const{
+    void _pretty_print(int level){
       for(int i=0; i <level; i++){
 	cout << ".";
       }

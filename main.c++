@@ -1,10 +1,10 @@
 #include "helper.h"
 
 #include "token.c++"
-#include "lexer.h"
+#include "lexer.c++"
 #include "control.c++"
-#include "TreeNode.h"
-#include "parser.h"
+#include "TreeNode.c++"
+#include "parser.c++"
 #include "cse.c++"
 
 int main(int argc, char *argv[]){
@@ -25,9 +25,7 @@ int main(int argc, char *argv[]){
 
     RpalLexer * const lexer = new RpalLexer(&input_file);
     if(strcmp(argv[1], "-ast") == 0){
-      cout << "creating lexer " << endl;
       ast_stack = parser->parse(lexer);
-      cout << "creating lexer " << endl;
       ast_stack->top()->pretty_print();
     }
     else if(strcmp(argv[1], "-st") == 0){
