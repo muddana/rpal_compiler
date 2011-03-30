@@ -200,20 +200,20 @@ E    -> ’let’ D ’in’ E                          => ’let’
      ->  Ew;
 */
   void RpalParser::E(){ 
-    if(token->value() == "let"){
+    if("let" == token->value()){
       ReadToken("let");
       D();
       ReadToken("in");
       E();
       build_tree(TreeNode::LET, 2);
     }
-    else if(token->value() == "fn"){
+    else if("fn" == token->value()){
       ReadToken("fn");
       int n = 0;
       do{
 	Vb();
 	n++;
-      }while(token->value() == "(" || token->type() == Token::IDENTIFIER );
+      }while("(" == token->value() || Token::IDENTIFIER == token->type());
       ReadToken(".");
       E();
       build_tree(TreeNode::LAMBDA, n+1);
@@ -227,7 +227,7 @@ Ew   -> T ’where’ Dr                            => ’where’
      -> T;*/
   void RpalParser::Ew(){
     T();
-    if(token->value() == "where"){
+    if("where" == token->value()){
       ReadToken("where");
       Dr();
       build_tree(TreeNode::WHERE, 2);
@@ -240,13 +240,13 @@ T    -> Ta ( ’,’ Ta )+                          => ’tau’
   */
   void RpalParser::T(){
     Ta();
-    if(token->value() == ","){
+    if("," == token->value()){
 	int n = 0;
 	do{
 	  ReadToken(",");
 	  Ta();
 	  n++;
-	}while(token->value() == ",");
+	}while("," == token->value());
 	build_tree(TreeNode::TAU, n+1);
     }
       
@@ -258,7 +258,7 @@ Ta   -> Ta ’aug’ Tc                             => ’aug’
   */
   void RpalParser::Ta(){
     Tc();
-    while(token->value() == "aug"){
+    while("aug" == token->value()){
       ReadToken("aug");
       Tc();
       build_tree(TreeNode::AUG, 2);
@@ -272,7 +272,7 @@ Tc   -> B ’->’ Tc ’|’ Tc                      => '->'
 
   void RpalParser::Tc(){
     B();
-    if(token->value() == "->"){
+    if("->" == token->value()){
       ReadToken("->");
       Tc();
       ReadToken("|");
@@ -288,7 +288,7 @@ B    -> B ’or’ Bt                               => ’or’
 
   void RpalParser::B(){
     Bt();
-    while(token->value() == "or"){
+    while("or" == token->value()){
       ReadToken("or");
       Bt();
       build_tree(TreeNode::OR, 2);
@@ -301,7 +301,7 @@ Bt   -> Bt ’&’ Bs                               => ’&’
   */
   void RpalParser::Bt(){
     Bs();
-    while(token->value() == "&"){
+    while("&" == token->value()){
       ReadToken("&");
       Bs();
       //build tree with 2 elements from the stack
@@ -314,7 +314,7 @@ Bs   -> ’not’ Bp                                => ’not’
      -> Bp ;
   */
   void RpalParser::Bs(){
-    if(token->value() == "not"){
+    if("not" == token->value()){
       ReadToken("not");
       Bp();
       build_tree(TreeNode::NOT, 1);
@@ -335,32 +335,32 @@ Bp   -> A (’gr’ | ’>’ ) A                       => ’gr’
   */
   void RpalParser::Bp(){
     A();
-    if(token->value() == "gr" || token->value() == ">" ){
+    if("gr" == token->value() || ">" ==  token->value()){
       ReadToken(token->value());
       A();
       build_tree(TreeNode::GR, 2);
     }
-    else if(token->value() == "ge" || token->value() == ">="){
+    else if("ge" == token->value() || ">=" == token->value()){
       ReadToken(token->value());
       A();
       build_tree(TreeNode::GE, 2);
     }
-    else if(token->value() == "ls" || token->value() == "<"){
+    else if("ls" == token->value() || "<" == token->value()){
       ReadToken(token->value());
       A();
       build_tree(TreeNode::LS, 2);
     }
-    else if(token->value() == "le" || token->value() == "<="){
+    else if("le" == token->value() || "<=" == token->value()){
       ReadToken(token->value());
       A();
       build_tree(TreeNode::LE, 2);
     }
-    else if(token->value() == "eq"){
+    else if("eq" == token->value()){
       ReadToken(token->value());
       A();
       build_tree(TreeNode::EQ, 2);
     }
-    else if(token->value() == "ne"){
+    else if("ne" == token->value()){
       ReadToken(token->value());
       A();
       build_tree(TreeNode::NE, 2);
@@ -376,11 +376,11 @@ A    -> A ’+’ At                                => ’+’
      -> At ;
   */
   void RpalParser::A(){
-    if(token->value() == "+"){
+    if("+" == token->value()){
       ReadToken("+");
       At();
     }
-    else if(token->value() == "-"){
+    else if("-" == token->value()){
       ReadToken("-");
       At();
       build_tree(TreeNode::NEG, 1);
@@ -388,7 +388,7 @@ A    -> A ’+’ At                                => ’+’
     else{
       At();
     }
-    while(token->value() =="+" || token->value()=="-"){
+    while("+" == token->value() || "-" == token->value()){
       string temp_tok_value = token->value();
       ReadToken(token->value());//either +  or -
       At();
@@ -405,11 +405,11 @@ At   -> At ’*’ Af                               => ’*’
   */
   void RpalParser::At(){
     Af();
-    while(token->value() == "*" || token->value() == "/"){
+    while("*" == token->value() || "/" == token->value()){
       string temp_tok_value = token->value();
       ReadToken(token->value());
       Af();
-      build_tree(temp_tok_value == "*" ? TreeNode::MULTIPLY : TreeNode::DIVIDE , 2);
+      build_tree("*" == temp_tok_value ? TreeNode::MULTIPLY : TreeNode::DIVIDE , 2);
     }
   };
 
@@ -419,7 +419,7 @@ Af   -> Ap ’**’ Af                              => ’**’
   */
   void RpalParser::Af(){
     Ap();
-    if(token->value() == "**"){
+    if("**" == token->value()){
       ReadToken("**");
       Af();
       build_tree(TreeNode::POWER , 2);
@@ -432,7 +432,7 @@ Ap   -> Ap ’@’ ’<IDENTIFIER>’ R                 => ’@’
   */
   void RpalParser::Ap(){
     R();
-    while(token->value() == "@"){
+    while("@" == token->value()){
       ReadToken("@");
       build_tree(TreeNode::IDENTIFIER, token->value());
       ReadToken(token->value());
@@ -447,7 +447,7 @@ R    -> R Rn                                    => ’gamma’
 */
   void RpalParser::R(){
     Rn();
-    while((token->type() == Token::IDENTIFIER || token->type() == Token::INTEGER || token->type() == Token::STRING || token->value() == "(" || token->value() == "false" || token->value() == "true" || token->value() == "nil" || token->value() == "dummy") && !is_keyword(token->value())){
+    while((Token::IDENTIFIER == token->type()|| Token::INTEGER == token->type() || Token::STRING == token->type() || "(" == token->value() || "false" == token->value() || "true" == token->value() || "nil" == token->value() || "dummy" ==  token->value()) && !is_keyword(token->value())){
       Rn();
       build_tree(TreeNode::GAMMA , 2);
     };
@@ -464,37 +464,37 @@ Rn   -> ’<IDENTIFIER>’
      -> ’dummy’                                 => ’dummy’ ; 
 */
   void RpalParser::Rn(){
-    if(token->value() == "(" && token->type() == Token::PUNCTION){
+    if("(" == token->value() && Token::PUNCTION == token->type()){
       ReadToken("(");
       E();
       ReadToken(")");
     }
-    else if(token->type() == Token::IDENTIFIER || token->type() == Token::INTEGER || token->type() == Token::STRING){
-      if(token->value() == "true"){
+    else if(Token::IDENTIFIER == token->type() || Token::INTEGER == token->type() || Token::STRING == token->type()){
+      if("true" == token->value()){
 	build_tree(TreeNode::TRUE, token->value());
 	ReadToken("true");
       }
-      else if(token->value() == "false"){
+      else if("false" == token->value()){
 	build_tree(TreeNode::FALSE, token->value());
 	ReadToken("false");
       }
-      else if(token->value() == "nil"){
+      else if("nil" == token->value()){
 	build_tree(TreeNode::NIL, token->value());
 	ReadToken("nil");
       }
-      else if(token->value() == "dummy"){
+      else if("dummy" == token->value()){
 	build_tree(TreeNode::DUMMY, token->value());
 	ReadToken("dummy");
       }
-      else if(token->type() == Token::IDENTIFIER){
+      else if(Token::IDENTIFIER == token->type()){
 	build_tree(TreeNode::IDENTIFIER, token->value());
 	ReadToken(token->value());
       }
-      else if(token->type() == Token::STRING){
+      else if(Token::STRING == token->type()){
 	build_tree(TreeNode::STRING, token->value());
 	ReadToken(token->value());
       }
-      else if(token->type() == Token::INTEGER){
+      else if(Token::INTEGER == token->type()){
 	build_tree(TreeNode::INTEGER, token->value());
 	ReadToken(token->value());
       }
@@ -514,7 +514,7 @@ D    -> Da ’within’ D                           => ’within’
   */
   void RpalParser::D(){
     Da();
-    if(token->value() == "within"){
+    if("within" == token->value()){
       ReadToken("within");
       D();
       build_tree(TreeNode::WITHIN, 2);
@@ -527,13 +527,13 @@ D    -> Da ’within’ D                           => ’within’
   */
   void RpalParser::Da(){
     Dr();
-    if(token->value() == "and"){
+    if("and" == token->value()){
       int n = 0;
       do{
 	ReadToken("and");
 	n++;
 	Dr();
-      }while(token->value() == "and");
+      }while("and" == token->value());
       build_tree(TreeNode::AND, n+1);
     }
   };
@@ -544,7 +544,7 @@ D    -> Da ’within’ D                           => ’within’
          -> Db ;
   */
   void RpalParser::Dr(){
-    if(token->value() == "rec"){
+    if("rec" == token->value()){
       ReadToken("rec");
       Db();
       build_tree(TreeNode::REC, 1);
@@ -626,14 +626,14 @@ D    -> Da ’within’ D                           => ’within’
   void RpalParser::Vl(){
     build_tree(TreeNode::IDENTIFIER, token->value());
     ReadToken(token->value());
-    if(token->value() == ","){
+    if("," == token->value()){
       int n = 0;
       do{
 	ReadToken(",");
 	build_tree(TreeNode::IDENTIFIER, token->value());
 	ReadToken(token->value());
 	n++;
-      }while(token->value() == ",");
+      }while("," == token->value())
       build_tree(TreeNode::COMMA, n+1);
     }
   };
