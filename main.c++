@@ -3,8 +3,12 @@
 #include "rpalerror.h"
 #include "token.c++"
 #include "lexer.c++"
-#include "TreeNode.c++"
+
+
 #include "control.c++"
+
+#include "TreeNode.c++"
+
 #include "parser.c++"
 #include "environment.c++"
 #include "cse.c++"

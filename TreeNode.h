@@ -13,7 +13,7 @@
 //first child next sibling notation of a n-ry tree
   class TreeNode{
   public:
-    //void flatten(Control *, vector<Control *> *);
+    void flatten(Control *, vector<Control *> *);
 
     enum Type {
       LAMBDA = 1 ,
@@ -79,7 +79,9 @@
     };
     string _value;
     Type _type;
+
   private:
+
     void _standardize(){
       TreeNode *p, *e, *e1, *e2, *x, *x1, *x2, *n, *temp, *new_temp;
 

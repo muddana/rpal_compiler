@@ -1,9 +1,11 @@
 #include "control.h"
 
+#include "TreeNode.h"
+
 /*enum Control::Type{
     ENV = 1 ,
     DELTA = 2 ,
-    IDENTIFIER = 3 ,
+    NAME = 3 ,
     LAMBDA = 4 ,
     GAMMA = 5 ,
     AUG = 6 ,
@@ -45,7 +47,7 @@
 	str = "<D" + itos(_index) + ">" ;
 	return str;
 	
-      case IDENTIFIER :
+      case NAME :
 	return _variables.at(0);//.front() ; //not sure y front() is not working
 	
       case LAMBDA :
@@ -56,7 +58,7 @@
 	return str ;
 	
       case GAMMA :
-	return "G" ;
+	return "Gamma" ;
 	
       case AUG :
 	return "AUG" ;
@@ -270,6 +272,9 @@ void Control::pretty_print(){
 //TODO: why not pass the whole treenode itself?
 void Control::add_control(int type, string value, vector<string> *variables, Control* del_ptr, int deltas_size){ 
     //has to store appropriate control depeneding on the type and value of the tree node
+
+  //cout << "TreeNode " << node->to_s() << " : "  << node->value()<< endl;
+
   int tau_count;
   Control *temp = NULL;
   switch(type){
@@ -295,10 +300,11 @@ void Control::add_control(int type, string value, vector<string> *variables, Con
     temp = new Control(Control::GAMMA, value);
     break;
   case TreeNode::IDENTIFIER:
-    temp = new Control(value, Control::IDENTIFIER);
-    
+    //cout << "adding new identifier control " << value<< endl;
+    temp = new Control(value, Control::NAME);
+    break;
   case TreeNode::STRING:
-    //cout << " Value is : "<< value << endl;
+    //cout << " String control of Value is : "<< value << endl;
     temp = new Control(Control::STRING, value.substr(1,value.length()-2));
     break;
   case TreeNode::TAU:
@@ -357,9 +363,11 @@ void Control::add_control(int type, string value, vector<string> *variables, Con
     temp = new Control(Control::DUMMY);
     break;
   default:
-    throw RpalError(RpalError::INTERNAL,"UnHandled TreeNode found!?, TreeNode value:" + value + " type:" + type );
+    throw RpalError(RpalError::INTERNAL,"UnHandled TreeNode found!?, TreeNode value:" + value + " type:" + itos(type));
     break;
   };
   _control_struct->push_back(temp);
+  //cout << "added control " << temp->to_s() << " : "  << temp->value()<< endl;
 };
+
 

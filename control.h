@@ -1,12 +1,12 @@
 class Control{
 public:
-  void add_control(int , string,  vector<string> *, Control*, int);  // why not pass the whole node(pointer) itself
+  void add_control( int , string,  vector<string> *, Control*, int);  // why not pass the whole node(pointer) itself
   void pretty_print();
 
   enum Type{
     ENV = 1 ,
     DELTA = 2 ,
-    IDENTIFIER = 3 ,
+    NAME = 3 ,
     LAMBDA = 4 ,
     GAMMA = 5 ,
     AUG = 6 ,

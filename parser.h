@@ -633,7 +633,7 @@ D    -> Da ’within’ D                           => ’within’
 	build_tree(TreeNode::IDENTIFIER, token->value());
 	ReadToken(token->value());
 	n++;
-      }while("," == token->value())
+      }while("," == token->value());
       build_tree(TreeNode::COMMA, n+1);
     }
   };

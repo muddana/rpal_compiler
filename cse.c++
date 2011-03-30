@@ -50,10 +50,21 @@ private:
     };
   };
 
+  //printing deltas
+  void print_deltas(){
+    for(int j = 0; j < deltas->size(); j++){
+      cout << deltas->at(j)->to_s() << " : ";
+      for(int k = 0; k < deltas->at(j)->_control_struct->size(); k++){
+	cout << deltas->at(j)->_control_struct->at(k)->to_s() << " ";
+      }
+      cout << endl;
+    };
+  }
   //preparing the control structures and putting the first control structure on the control
   void init_control_stack(TreeNode *root){
     deltas->push_back(root_delta);
-    treeFlattener(root,root_delta, deltas);
+    //treeFlattener(root,root_delta, deltas);
+    root->flatten(root_delta, deltas);
     _control.push_back(new Control(Control::ENV, 0, false));
     _stack.push(new Control(Control::ENV, 0, false));
     for(int i=0;i<root_delta->_control_struct->size();i++){
@@ -72,6 +83,9 @@ private:
     Environment *new_env = NULL;
     int delta_index = -1;
     while(!_control.empty()){
+
+      //print_control_and_stack();
+      
       curr_control = _control.at(_control.size()-1); 
       temp = NULL;
       switch(curr_control->type()){
@@ -83,7 +97,7 @@ private:
       case Control::YSTAR :
 	put_on_stack_pop_from_control(curr_control);
 	break ;
-      case Control::IDENTIFIER:
+      case Control::NAME:
 	if(is_inbuilt_function(curr_control->_variables.front())){
 	  put_on_stack_pop_from_control(curr_control);
 	}
@@ -454,6 +468,7 @@ private:
 	    break ;
 	  }
 	else{
+	  
 	    cout << "Incompatible arguments for the operator '+'" ;
 	    exit(1) ;
 	  }
@@ -531,6 +546,9 @@ private:
   }
   //apply functions CSE Rule 3
   void apply_rator(Control *rator){
+    //if(0 <= rator->_variables.size()){
+    //  throw RpalError(RpalError::INTERNAL, "Rator Control but does not contain any variables");
+    //};
     if(rator->_variables.front() == "Print"){
       string print_str = _stack.top()->to_s(); // i dont think this should work .. here it should use the lookup
       escape_print_string(print_str);
@@ -610,7 +628,7 @@ private:
       };
     }
     else if(rator->_variables.front() == "Conc"){ //could have check for string here
-      Control *conc_lambda = new Control(Control::IDENTIFIER);
+      Control *conc_lambda = new Control(Control::NAME);
       conc_lambda->_variables.push_back("Conclambda");
       conc_lambda->_variables.push_back(_stack.top()->value());
       _stack.pop();
@@ -676,13 +694,13 @@ private:
 };
 
 
-void CSE::treeFlattener(TreeNode* node, Control *delta,vector<Control *> *deltas){
+/*void CSE::treeFlattener(TreeNode* node, Control *delta,vector<Control *> *deltas){
 
   //used to handle the recursive retrieval of delta and to restore the delta after the new delta is handled
   Control *temp_del_ptr = NULL;
   
   vector<string> *variables = NULL;//new vector<string>();
-  if(node->type() == TreeNode::LAMBDA){
+  if(TreeNode::LAMBDA == node->type()){
     variables = new vector<string>();
     //now fill the variables
     if(TreeNode::IDENTIFIER == node->lft->_type){
@@ -703,7 +721,7 @@ void CSE::treeFlattener(TreeNode* node, Control *delta,vector<Control *> *deltas
     //adding to the deltas list
     deltas->push_back(temp_del_ptr);
     //adding the current lamda to control structure and referencing it to the newly created delta
-    delta->add_control(node->type(), node->value(), variables, temp_del_ptr, deltas->size());
+    delta->add_control(node, node->type(), node->value(), variables, temp_del_ptr, deltas->size());
     
     //donot need to flatten the lft child since these are variable(or) variables
     //flatenning the body of lambda
@@ -729,7 +747,7 @@ void CSE::treeFlattener(TreeNode* node, Control *delta,vector<Control *> *deltas
 	  temp = temp->rgt;
 	}
       }
-      delta_then->add_control(node->lft->rgt->_type, node->lft->rgt->_value, temp_variables, delta_then, deltas->size());
+      delta_then->add_control(node, node->lft->rgt->_type, node->lft->rgt->_value, temp_variables, delta_then, deltas->size());
       if(node->lft->rgt->lft != NULL)
 	treeFlattener(node->lft->rgt->lft, delta_then, deltas);
     }
@@ -737,7 +755,7 @@ void CSE::treeFlattener(TreeNode* node, Control *delta,vector<Control *> *deltas
     Control *delta_else = new Control(Control::DELTA, deltas->size());
     deltas->push_back(delta_else);
     delta->_control_struct->push_back(new Control(Control::DELTA, deltas->size()-1)); //delta else
-
+    
     if(node->lft->rgt->rgt->_type == TreeNode::TERNARY){
       treeFlattener(node->lft->rgt->rgt,delta_else, deltas);
     }
@@ -751,14 +769,14 @@ void CSE::treeFlattener(TreeNode* node, Control *delta,vector<Control *> *deltas
 	  temp = temp->rgt;
 	}
       }
-      delta_else->add_control(node->lft->rgt->rgt->_type, node->lft->rgt->rgt->_value, temp_variables, delta_else, deltas->size());
+      delta_else->add_control(node, node->lft->rgt->rgt->_type, node->lft->rgt->rgt->_value, temp_variables, delta_else, deltas->size());
       if(node->lft->rgt->rgt->lft != NULL)
 	treeFlattener(node->lft->rgt->rgt->lft,delta_else, deltas);      
     };
     
     Control *beta = new Control(Control::BETA);
     delta->_control_struct->push_back(new Control(Control::BETA, "beta"));
-    delta->add_control(node->lft->_type, node->lft->_value, NULL, NULL, deltas->size());
+    delta->add_control(node, node->lft->_type, node->lft->_value, NULL, NULL, deltas->size());
     if(node->lft->lft != NULL)
       treeFlattener(node->lft->lft, delta, deltas);
   }
@@ -773,18 +791,129 @@ void CSE::treeFlattener(TreeNode* node, Control *delta,vector<Control *> *deltas
       };
     };
 
+    
     //create a new control and flatten urself. in case of non LAMBDA node
-    delta->add_control(node->type(), node->value(), variables, temp_del_ptr, deltas->size());
+    delta->add_control(node, node->type(), node->value(), variables, temp_del_ptr, deltas->size());
     //flatten you left kid and then the right kid
     if(NULL != node->lft){
       treeFlattener(node->lft, delta, deltas);
-      //if(lft->rgt != NULL){
-      //	lft->rgt->flatten(delta, deltas);
-      //}
     };
     if(NULL != node->rgt){
       treeFlattener(node->rgt, delta,deltas);
     };
   };
 };
+*/
 
+
+void TreeNode::flatten(Control *delta,vector<Control *> *deltas){
+
+  //used to handle the recursive retrieval of delta and to restore the delta after the new delta is handled
+  Control *temp_del_ptr = NULL;
+  
+  vector<string> *variables = NULL;//new vector<string>();
+  if(_type == TreeNode::LAMBDA){
+    variables = new vector<string>();
+    //now fill the variables
+    if(lft->_type == TreeNode::IDENTIFIER){
+      variables->push_back(lft->_value);
+    }
+    else if(lft->_type == TreeNode::COMMA){
+      TreeNode *temp = lft->lft;
+      while(temp!= NULL){
+	variables->push_back(temp->_value);
+	temp = temp->rgt;
+      };
+    }
+    else{
+      cout << "Expected Identifier or Comma, but din't find" << endl;
+    };
+    //creating new delta
+    temp_del_ptr = new Control(Control::DELTA, deltas->size());
+    //adding to the deltas list
+    deltas->push_back(temp_del_ptr);
+    //adding the current lamda to control structure and referencing it to the newly created delta
+    delta->add_control(_type, _value, variables, temp_del_ptr, deltas->size());
+    
+    //donot need to flatten the lft child since these are variable(or) variables
+    //flatenning the body of lambda
+    lft->rgt->flatten(temp_del_ptr, deltas);
+    
+    if(rgt!=NULL)
+      rgt->flatten(delta, deltas);
+  }
+  else if(_type == TreeNode::TERNARY){
+    Control *delta_then = new Control(Control::DELTA, deltas->size());
+    deltas->push_back(delta_then);
+    delta->_control_struct->push_back(new Control(Control::DELTA, deltas->size()-1)); //delta then
+    if(lft->rgt->_type == TreeNode::TERNARY){
+      lft->rgt->flatten(delta_then, deltas);
+    }
+    else{
+      vector<string> *temp_variables = NULL;
+      if(lft->rgt->_type == TreeNode::TAU){
+	TreeNode *temp = lft->rgt->lft;
+	temp_variables = new vector<string>;
+	while(temp!= NULL){
+	  temp_variables->push_back(temp->_value); // will these be any useful
+	  temp = temp->rgt;
+	}
+      }
+      delta_then->add_control(lft->rgt->_type, lft->rgt->_value, temp_variables, delta_then, deltas->size());
+      if(lft->rgt->lft != NULL)
+	lft->rgt->lft->flatten(delta_then, deltas);
+    }
+    
+    Control *delta_else = new Control(Control::DELTA, deltas->size());
+    deltas->push_back(delta_else);
+    delta->_control_struct->push_back(new Control(Control::DELTA, deltas->size()-1)); //delta else
+
+    if(lft->rgt->rgt->_type == TreeNode::TERNARY){
+      lft->rgt->rgt->flatten(delta_else, deltas);
+    }
+    else{
+      vector<string> *temp_variables = NULL;
+      if(lft->rgt->rgt->_type == TreeNode::TAU){
+	TreeNode *temp = lft->rgt->rgt->lft;
+	temp_variables = new vector<string>;
+	while(temp!= NULL){
+	  temp_variables->push_back(temp->_value); // will these be any useful
+	  temp = temp->rgt;
+	}
+      }
+      delta_else->add_control(lft->rgt->rgt->_type, lft->rgt->rgt->_value, temp_variables, delta_else, deltas->size());
+      if(lft->rgt->rgt->lft != NULL)
+	lft->rgt->rgt->lft->flatten(delta_else, deltas);      
+    };
+    
+    Control *beta = new Control(Control::BETA);
+    delta->_control_struct->push_back(new Control(Control::BETA, "beta"));
+    delta->add_control(lft->_type, lft->_value, NULL, NULL, deltas->size());
+    if(lft->lft != NULL)
+      lft->lft->flatten(delta, deltas);
+  }
+  else{
+    //checking for speacial cases like TAU
+    if(_type == TreeNode::TAU){
+      variables = new vector<string>();
+      TreeNode *temp = lft;
+      while(temp!= NULL){
+	variables->push_back(temp->_value);//will these be any useful ?
+	temp = temp->rgt;
+      };
+    };
+
+    //create a new control and flatten urself. in case of non LAMBDA node
+    delta->add_control(_type, _value, variables, temp_del_ptr, deltas->size());
+    //flatten you left kid and then the right kid
+    if(lft !=NULL){
+      lft->flatten(delta, deltas);
+      //if(lft->rgt != NULL){
+      //	lft->rgt->flatten(delta, deltas);
+      //}
+    };
+    if(rgt!=NULL){
+      rgt->flatten(delta,deltas);
+    };
+  };
+};
