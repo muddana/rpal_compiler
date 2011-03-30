@@ -16,7 +16,7 @@ public:
     init_control_stack(root);
     _run();
     if(!_control.empty() || env_stack.size() != 1){
-      cout << "Interpretor Error: stack/env_stack is not empty" << endl;
+      throw RpalError(RpalError::INTERNAL, "stack/env_stack is not empty");
     }
     cout << endl;
   };
@@ -30,6 +30,7 @@ private:
     return temp_env;
   };
   void treeFlattener(TreeNode* node, Control *delta,vector<Control *> *deltas);
+
   void print_control_and_stack(){
     for(int i=0; i < _control.size() ; i++){
       cout << _control.at(i)->to_s() << " " ;
@@ -92,8 +93,7 @@ private:
 	    put_on_stack_pop_from_control(temp);
 	  }
 	  else{
-	    cout << "Unknown name: " << curr_control->value() << endl;
-	    throw "Unknown name" ;
+	    throw RpalError(RpalError::INTERPRETER, " Unknown name" +  curr_control->value());
 	  };
 	};
 	break;
@@ -788,116 +788,3 @@ void CSE::treeFlattener(TreeNode* node, Control *delta,vector<Control *> *deltas
   };
 };
 
-
-/*void TreeNode::flatten(Control *delta,vector<Control *> *deltas){
-
-  //used to handle the recursive retrieval of delta and to restore the delta after the new delta is handled
-  Control *temp_del_ptr = NULL;
-  
-  vector<string> *variables = NULL;//new vector<string>();
-  if(_type == TreeNode::LAMBDA){
-    variables = new vector<string>();
-    //now fill the variables
-    if(lft->_type == TreeNode::IDENTIFIER){
-      variables->push_back(lft->_value);
-    }
-    else if(lft->_type == TreeNode::COMMA){
-      TreeNode *temp = lft->lft;
-      while(temp!= NULL){
-	variables->push_back(temp->_value);
-	temp = temp->rgt;
-      };
-    }
-    else{
-      cout << "Expected Identifier or Comma, but din't find" << endl;
-    };
-    //creating new delta
-    temp_del_ptr = new Control(Control::DELTA, deltas->size());
-    //adding to the deltas list
-    deltas->push_back(temp_del_ptr);
-    //adding the current lamda to control structure and referencing it to the newly created delta
-    delta->add_control(_type, _value, variables, temp_del_ptr, deltas->size());
-    
-    //donot need to flatten the lft child since these are variable(or) variables
-    //flatenning the body of lambda
-    lft->rgt->flatten(temp_del_ptr, deltas);
-    
-    if(rgt!=NULL)
-      rgt->flatten(delta, deltas);
-  }
-  else if(_type == TreeNode::TERNARY){
-    Control *delta_then = new Control(Control::DELTA, deltas->size());
-    deltas->push_back(delta_then);
-    delta->_control_struct->push_back(new Control(Control::DELTA, deltas->size()-1)); //delta then
-    if(lft->rgt->_type == TreeNode::TERNARY){
-      lft->rgt->flatten(delta_then, deltas);
-    }
-    else{
-      vector<string> *temp_variables = NULL;
-      if(lft->rgt->_type == TreeNode::TAU){
-	TreeNode *temp = lft->rgt->lft;
-	temp_variables = new vector<string>;
-	while(temp!= NULL){
-	  temp_variables->push_back(temp->_value); // will these be any useful
-	  temp = temp->rgt;
-	}
-      }
-      delta_then->add_control(lft->rgt->_type, lft->rgt->_value, temp_variables, delta_then, deltas->size());
-      if(lft->rgt->lft != NULL)
-	lft->rgt->lft->flatten(delta_then, deltas);
-    }
-    
-    Control *delta_else = new Control(Control::DELTA, deltas->size());
-    deltas->push_back(delta_else);
-    delta->_control_struct->push_back(new Control(Control::DELTA, deltas->size()-1)); //delta else
-
-    if(lft->rgt->rgt->_type == TreeNode::TERNARY){
-      lft->rgt->rgt->flatten(delta_else, deltas);
-    }
-    else{
-      vector<string> *temp_variables = NULL;
-      if(lft->rgt->rgt->_type == TreeNode::TAU){
-	TreeNode *temp = lft->rgt->rgt->lft;
-	temp_variables = new vector<string>;
-	while(temp!= NULL){
-	  temp_variables->push_back(temp->_value); // will these be any useful
-	  temp = temp->rgt;
-	}
-      }
-      delta_else->add_control(lft->rgt->rgt->_type, lft->rgt->rgt->_value, temp_variables, delta_else, deltas->size());
-      if(lft->rgt->rgt->lft != NULL)
-	lft->rgt->rgt->lft->flatten(delta_else, deltas);      
-    };
-    
-    Control *beta = new Control(Control::BETA);
-    delta->_control_struct->push_back(new Control(Control::BETA, "beta"));
-    delta->add_control(lft->_type, lft->_value, NULL, NULL, deltas->size());
-    if(lft->lft != NULL)
-      lft->lft->flatten(delta, deltas);
-  }
-  else{
-    //checking for speacial cases like TAU
-    if(_type == TreeNode::TAU){
-      variables = new vector<string>();
-      TreeNode *temp = lft;
-      while(temp!= NULL){
-	variables->push_back(temp->_value);//will these be any useful ?
-	temp = temp->rgt;
-      };
-    };
-
-    //create a new control and flatten urself. in case of non LAMBDA node
-    delta->add_control(_type, _value, variables, temp_del_ptr, deltas->size());
-    //flatten you left kid and then the right kid
-    if(lft !=NULL){
-      lft->flatten(delta, deltas);
-      //if(lft->rgt != NULL){
-      //	lft->rgt->flatten(delta, deltas);
-      //}
-    };
-    if(rgt!=NULL){
-      rgt->flatten(delta,deltas);
-    };
-  };
-};
-*/

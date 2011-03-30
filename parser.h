@@ -181,12 +181,10 @@ D    -> Da ’within’ D                           => ’within’
     read_next_token();
     E();
     if(ast_stack.size() != 1){
-      cout << "Oops more than 1 element on the stack" << endl;
-      throw "Parse Error: Stack not empty at the end of parsing";
+      throw RpalError(RpalError::PARSER, "Parse Error: Stack not empty at the end of parsing");
     }
     if(next_token->type() != Token::ENDOFFILE){
-      cout << "Input still remaining" << endl;
-      throw "Parse Error: Input still remaining.";
+      throw RpalError(RpalError::PARSER, "Parse Error: Input still remaining.");
     }
   };
 
@@ -395,8 +393,7 @@ A    -> A ’+’ At                                => ’+’
       ReadToken(token->value());//either +  or -
       At();
       if(temp_tok_value != "+" &&  temp_tok_value != "-"){
-	cout << "Expecting + or - but recieved: " <<  temp_tok_value << endl;
-	throw "Expecting + or - but recieved: " +  temp_tok_value;
+	throw RpalError(RpalError::PARSER, "Expecting + or - but recieved: " +  temp_tok_value);
       };
       build_tree(temp_tok_value == "+" ? TreeNode::ADD : TreeNode::SUBTRACT , 2);
     };
@@ -502,13 +499,11 @@ Rn   -> ’<IDENTIFIER>’
 	ReadToken(token->value());
       }
       else{
-	cout << "Unknown token" + itos(token->type()) + ", value: " + token->value() << endl;
-	throw("Token Not Recognized: " + token->value());
+	throw RpalError(RpalError::PARSER, "Unexcepted token type " + itos(token->type()) + "  " + token->value());
       }
     }
     else{
-      cout << "Unknown token" + itos(token->type()) + ", value: " + token->value() << endl;
-      throw("Token Not Recognized: " + token->value());
+      throw RpalError(RpalError::PARSER, "Unexcepted token type " + itos(token->type()) + "  " + token->value());
     };
   };
 
@@ -566,14 +561,14 @@ D    -> Da ’within’ D                           => ’within’
          -> ’(’ D ’)’ ;
   */
   void RpalParser::Db(){
-    if(token->value() == "("){
+    if("(" == token->value()){
       ReadToken("(");
       D();
       ReadToken(")");
     }
-    else if(token->type() == Token::IDENTIFIER){
+    else if(Token::IDENTIFIER == token->type()){
       //peeking ahead
-      if(next_token->value() == "=" || next_token->value() == ","){
+      if("=" == next_token->value() || "," == next_token->value()){
 	Vl();
 	ReadToken("=");
 	E();
@@ -586,14 +581,14 @@ D    -> Da ’within’ D                           => ’within’
 	do{
 	  Vb();
 	  n++;
-	}while(token->value() == "(" || token->type() == Token::IDENTIFIER);
+	}while("(" == token->value() || Token::IDENTIFIER == token->type());
 	ReadToken("=");
 	E();
 	build_tree(TreeNode::FCN_FORM, n+2);
       }
     }
     else{
-      throw "Expected IDENTIFIER in Db";
+      throw RpalError(RpalError::PARSER, " Expected Identifier but found " + token->to_s());
     }
   };
 
@@ -604,9 +599,9 @@ D    -> Da ’within’ D                           => ’within’
          -> ’(’ ’)’                                 => ’()’;
   */
   void RpalParser::Vb(){
-    if(token->value() == "("){
+    if("(" == token->value()){
       ReadToken("(");
-      if(token->value() == ")"){
+      if("(" == token->value()){
 	ReadToken(")");
 	build_tree(TreeNode::EMPTY_BRACKET, 0);
       }
@@ -616,12 +611,12 @@ D    -> Da ’within’ D                           => ’within’
       }
 	
     }
-    else if(token->type() == Token::IDENTIFIER){
+    else if(Token::IDENTIFIER == token->type()){
       build_tree(TreeNode::IDENTIFIER, token->value());
       ReadToken(token->value());
     }
     else{
-      throw "Expected '(' or IDNETIFIER but got" + token->value();
+      throw RpalError(RpalError::PARSER, " Expected '(' or IDENTIFIER but found " + token->value());
     }  
   };
 
@@ -649,8 +644,7 @@ D    -> Da ’within’ D                           => ’within’
       read_next_token();
     }
     else{
-      cout << "Expected '" + val + "' recieved '" + token->value() << "' token type : " << token->type() << endl;
-      throw "Expected " + val + " recieved " + token->value(); 
+      throw RpalError(RpalError::PARSER, "Expected " + val + " recieved " + token->value());
     }
   };
 

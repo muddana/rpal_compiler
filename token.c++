@@ -22,6 +22,27 @@ public:
   string value() const{
     return _value;
   };
+  string to_s() const{
+    switch(_type){
+    case IDENTIFIER:
+      return "IDENTIFIER";
+      break;
+    case INTEGER:
+      return "INTEGER";
+      break;
+    case OPERATOR:
+      return "OPERATOR";
+    case STRING:
+      return "STRING";
+    case DELETE:
+      return "DELETE";
+    case PUNCTION:
+      return "PUNCTION";
+    case ENDOFFILE:
+      return "ENDOFFILE";
+      break;
+    };
+  };
 private:
   const string _value;
   const int _type;

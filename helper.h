@@ -58,10 +58,19 @@ int find_in_vector(vector<T> &vec, T primitive_val){
   return index;
 }
 
-string itos(int i)	// convert int to string
+/*string itos(int i)	// convert int to string
+{
+  stringstream s;
+  s << i;
+  return s.str();
+  }*/
+
+template <class T>
+string itos(T i)	// convert int to string
 {
   stringstream s;
   s << i;
   return s.str();
 }
+
 

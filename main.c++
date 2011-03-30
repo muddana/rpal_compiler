@@ -1,5 +1,6 @@
 #include "helper.h"
 
+#include "rpalerror.h"
 #include "token.c++"
 #include "lexer.c++"
 #include "TreeNode.c++"
@@ -40,6 +41,9 @@ int main(int argc, char *argv[]){
   }else{
     cout << "[RPAL Interpreter by Srinivas Muddana 06/02/2009]" << endl << endl << "Usage: rpal [-ast] [-st] [-r] filename" << endl << endl;
   };
+  }
+  catch(RpalError& rpalErr){
+    cout << rpalErr.what() << endl;
   }
   catch(exception& ex){
     cout << ex.what() << endl;
