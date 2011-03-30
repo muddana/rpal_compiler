@@ -1,6 +1,6 @@
 class Control{
 public:
-  void add_control(int , string,  vector<string> *, Control*, int); //cheating this int has to be TreeNode::Type
+  void add_control(int , string,  vector<string> *, Control*, int);  // why not pass the whole node(pointer) itself
   void pretty_print();
 
   enum Type{

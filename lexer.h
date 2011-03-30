@@ -3,9 +3,7 @@
 class RpalLexer{
 public:
 
-  RpalLexer(ifstream *fileHandle);
-
-  
+  RpalLexer(ifstream *fileHandle);  
   const Token *nextToken();
 
 private:
@@ -93,8 +91,7 @@ private:
         buildManageTokens(Token::STRING, tokData);
       }
       else{ 
-	cout << endl << "Expected ' but found :" << (char)fileHndl->peek() << endl;
-	throw "end of string not found should hit eof here did it ? ";
+	throw RpalError(RpalError::LEXER, "Expected ' but found " + itos(fileHndl->peek()));
       };
     };
   };
@@ -120,8 +117,7 @@ private:
 	    buildManageTokens(Token::DELETE, tokData);
 	  }
 	else{
-	  cout << "End of line character for comment not found";
-	  throw "End of line character for comment not found";
+	  throw RpalError(RpalError::LEXER, "End of line character for comment not found");
 	}
       }
       else{
@@ -190,7 +186,7 @@ private:
 	readNextCharToStack();
       }
       else{
-	throw "illegal token: illegal escape character";
+	throw RpalError(RpalError::LEXER, "illegal token: illegal escape character" + itos(fileHndl->peek()));
       }
     }
   };
@@ -302,8 +298,6 @@ private:
 
   void getNextToken(){
     currState = SEARCHING;
-    //need to implement fall though
-    try{
       handleEOF();
       handleIdentifier();
       handleIntegers();
@@ -312,14 +306,6 @@ private:
       handleStrings();
       handleSpaces();
       handlePunction();
-    }
-    catch(int ex_num){
-      cout << "Lexer Error code :"  << ex_num << endl;
-      throw ex_num;
-    }
-    catch(...){ 
-      cout << "UnExpected Exception" << endl;
-    }
   };
   const Token *getScreenedNextToken(){
     do{

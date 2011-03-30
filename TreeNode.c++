@@ -97,7 +97,7 @@ void TreeNode::standardize(){
 
 void TreeNode::addChild(TreeNode *child){
   if(NULL == lft){
-	lft = child;
+    lft = child;
   }
   else{
     TreeNode *temp = lft;

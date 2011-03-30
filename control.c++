@@ -183,8 +183,7 @@
   
   Control::Control(Control::Type type, int index){
     if(Control::DELTA != type){
-      cout << "Control::DELTA 's constructor called for : " << type << endl;
-      throw "Control::DELTA 's constructor called for : ";
+      throw RpalError(RpalError::INTERNAL,"Control::DELTA 's constructor called for : " + type);
     };
     _type = type;
     _index = index;
@@ -204,8 +203,7 @@
   //For TAU and ENV
   Control::Control(Control::Type type, int index, bool watever){
     if(type != Control::TAU && type != Control::ENV){
-      cout << "Control::TAU 's constructor called for : " << type << endl;
-      throw "Control::TAU 's constructor called for : ";
+      throw RpalError(RpalError::INTERNAL, "Control::TAU 's constructor called for : "  + type );
     };
     _type = type;
     _index = index;
@@ -259,8 +257,7 @@ void Control::set_value(string value){
 //should this be avaiblable for the delta node ?
 void Control::pretty_print(){
   if(_type!=Control::DELTA){
-    cout << "Not a delta node, cannot pretty print" << endl;
-    throw "pretty_print called on delta node";
+    throw RpalError(RpalError::INTERNAL,"pretty_print called on non delta node, Not a delta node, cannot pretty print");
   };
   cout << to_s() << " ";
   for(int i=0; i< _control_struct->size(); i++){
@@ -270,7 +267,8 @@ void Control::pretty_print(){
 };
 
 
-void Control::add_control(int type, string value, vector<string> *variables, Control* del_ptr, int deltas_size){ // cheating this type had to be Treenode::Type 
+//TODO: why not pass the whole treenode itself?
+void Control::add_control(int type, string value, vector<string> *variables, Control* del_ptr, int deltas_size){ 
     //has to store appropriate control depeneding on the type and value of the tree node
   int tau_count;
   Control *temp = NULL;
@@ -298,7 +296,7 @@ void Control::add_control(int type, string value, vector<string> *variables, Con
     break;
   case TreeNode::IDENTIFIER:
     temp = new Control(value, Control::IDENTIFIER);
-    break;
+    
   case TreeNode::STRING:
     //cout << " Value is : "<< value << endl;
     temp = new Control(Control::STRING, value.substr(1,value.length()-2));
@@ -359,8 +357,7 @@ void Control::add_control(int type, string value, vector<string> *variables, Con
     temp = new Control(Control::DUMMY);
     break;
   default:
-    cout << "UnHandled Control/Control found!?, Control value:" << value << " type:" << type << endl;
-    throw "UnHandled Control found!?";
+    throw RpalError(RpalError::INTERNAL,"UnHandled TreeNode found!?, TreeNode value:" + value + " type:" + type );
     break;
   };
   _control_struct->push_back(temp);

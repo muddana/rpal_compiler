@@ -181,10 +181,10 @@ D    -> Da ’within’ D                           => ’within’
     read_next_token();
     E();
     if(ast_stack.size() != 1){
-      throw RpalError(RpalError::PARSER, "Parse Error: Stack not empty at the end of parsing");
+      throw RpalError(RpalError::PARSER, "Stack not empty at the end of parsing");
     }
     if(next_token->type() != Token::ENDOFFILE){
-      throw RpalError(RpalError::PARSER, "Parse Error: Input still remaining.");
+      throw RpalError(RpalError::PARSER, "Input still remaining.");
     }
   };
 

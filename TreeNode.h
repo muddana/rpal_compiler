@@ -91,8 +91,8 @@
       };
       switch(_type){
       case LET :
-	if(lft->_type != BINDING){
-	  throw "Subtree not standardised: case LET";
+	if(BINDING != lft->_type){
+	  throw RpalError(RpalError::INTERNAL, "Subtree not standardised: case LET");
 	}
 	_type = GAMMA;
 	lft->_type = LAMBDA;
@@ -101,8 +101,8 @@
 	lft->lft->rgt = p;
 	break;
       case WHERE:
-	if(lft->rgt->_type != BINDING){
-	  throw "Subtree not standardised: case WHERE";
+	if(BINDING != lft->rgt->_type){
+	  throw RpalError(RpalError::INTERNAL,"Subtree not standardised: case WHERE");
 	};
 	_type = GAMMA;
 	p = lft;
@@ -116,8 +116,8 @@
 	x->rgt = p;
 	break;
       case WITHIN:
-	if(lft->_type != BINDING || lft->rgt->_type != BINDING){
-	  throw "Subtree not standardised: case WITHIN";
+	if(BINDING != lft->_type || BINDING != lft->rgt->_type){
+	  throw RpalError(RpalError::INTERNAL,"Subtree not standardised: case WITHIN");
 	};
 	_type = BINDING;
 	x1 = lft->lft;//x1 and its next siblling(rgt) is E1
@@ -133,8 +133,8 @@
 	lft = x2;
 	break;
       case REC:
-	if(lft->_type != BINDING){
-	  throw "Subtree not standardised: case REC";
+	if(BINDING != lft->_type){
+	  throw RpalError(RpalError::INTERNAL,"Subtree not standardised: case REC");
 	};
 	_type = BINDING;
 	x = lft->lft;
