@@ -1,0 +1,318 @@
+\hypertarget{classTreeNode}{
+\section{TreeNode Class Reference}
+\label{classTreeNode}\index{TreeNode@{TreeNode}}
+}
+
+
+Collaboration diagram for TreeNode:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=174pt]{classTreeNode__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum {\bfseries Type} \{ \par
+{\bfseries LAMBDA} =  1, 
+{\bfseries WHERE} =  2, 
+{\bfseries TAU} =  3, 
+{\bfseries AUG} =  4, 
+\par
+{\bfseries TERNARY} =  5, 
+{\bfseries OR} =  6, 
+{\bfseries AND\_\-LOGICAL} =  7, 
+{\bfseries NOT} =  8, 
+\par
+{\bfseries GR} =  9, 
+{\bfseries GE} =  10, 
+{\bfseries LS} =  11, 
+{\bfseries LE} =  12, 
+\par
+{\bfseries EQ} =  13, 
+{\bfseries NE} =  14, 
+{\bfseries PLUS} =  15, 
+{\bfseries MINUS} =  16, 
+\par
+{\bfseries NEG} =  17, 
+{\bfseries MULTIPLY} =  18, 
+{\bfseries DIVIDE} =  19, 
+{\bfseries POWER} =  20, 
+\par
+{\bfseries AT} =  21, 
+{\bfseries GAMMA} =  22, 
+{\bfseries TRUE} =  23, 
+{\bfseries FALSE} =  24, 
+\par
+{\bfseries NIL} =  25, 
+{\bfseries DUMMY} =  26, 
+{\bfseries WITHIN} =  27, 
+{\bfseries AND} =  28, 
+\par
+{\bfseries REC} =  29, 
+{\bfseries BINDING} =  30, 
+{\bfseries FCN\_\-FORM} =  31, 
+{\bfseries EMPTY\_\-BRACKET} =  32, 
+\par
+{\bfseries COMMA} =  33, 
+{\bfseries LET} =  34, 
+{\bfseries IDENTIFIER} =  35, 
+{\bfseries STRING} =  36, 
+\par
+{\bfseries INTEGER} =  37, 
+{\bfseries YSTAR} =  38, 
+{\bfseries LAMBDA} =  1, 
+{\bfseries WHERE} =  2, 
+\par
+{\bfseries TAU} =  3, 
+{\bfseries AUG} =  4, 
+{\bfseries TERNARY} =  5, 
+{\bfseries OR} =  6, 
+\par
+{\bfseries AND\_\-LOGICAL} =  7, 
+{\bfseries NOT} =  8, 
+{\bfseries GR} =  9, 
+{\bfseries GE} =  10, 
+\par
+{\bfseries LS} =  11, 
+{\bfseries LE} =  12, 
+{\bfseries EQ} =  13, 
+{\bfseries NE} =  14, 
+\par
+{\bfseries ADD} =  15, 
+{\bfseries SUBTRACT} =  16, 
+{\bfseries NEG} =  17, 
+{\bfseries MULTIPLY} =  18, 
+\par
+{\bfseries DIVIDE} =  19, 
+{\bfseries POWER} =  20, 
+{\bfseries AT} =  21, 
+{\bfseries GAMMA} =  22, 
+\par
+{\bfseries TRUE} =  23, 
+{\bfseries FALSE} =  24, 
+{\bfseries NIL} =  25, 
+{\bfseries DUMMY} =  26, 
+\par
+{\bfseries WITHIN} =  27, 
+{\bfseries AND} =  28, 
+{\bfseries REC} =  29, 
+{\bfseries BINDING} =  30, 
+\par
+{\bfseries FCN\_\-FORM} =  31, 
+{\bfseries EMPTY\_\-BRACKET} =  32, 
+{\bfseries COMMA} =  33, 
+{\bfseries LET} =  34, 
+\par
+{\bfseries IDENTIFIER} =  35, 
+{\bfseries STRING} =  36, 
+{\bfseries INTEGER} =  37, 
+{\bfseries YSTAR} =  38
+ \}
+\item 
+enum {\bfseries Type} \{ \par
+{\bfseries LAMBDA} =  1, 
+{\bfseries WHERE} =  2, 
+{\bfseries TAU} =  3, 
+{\bfseries AUG} =  4, 
+\par
+{\bfseries TERNARY} =  5, 
+{\bfseries OR} =  6, 
+{\bfseries AND\_\-LOGICAL} =  7, 
+{\bfseries NOT} =  8, 
+\par
+{\bfseries GR} =  9, 
+{\bfseries GE} =  10, 
+{\bfseries LS} =  11, 
+{\bfseries LE} =  12, 
+\par
+{\bfseries EQ} =  13, 
+{\bfseries NE} =  14, 
+{\bfseries PLUS} =  15, 
+{\bfseries MINUS} =  16, 
+\par
+{\bfseries NEG} =  17, 
+{\bfseries MULTIPLY} =  18, 
+{\bfseries DIVIDE} =  19, 
+{\bfseries POWER} =  20, 
+\par
+{\bfseries AT} =  21, 
+{\bfseries GAMMA} =  22, 
+{\bfseries TRUE} =  23, 
+{\bfseries FALSE} =  24, 
+\par
+{\bfseries NIL} =  25, 
+{\bfseries DUMMY} =  26, 
+{\bfseries WITHIN} =  27, 
+{\bfseries AND} =  28, 
+\par
+{\bfseries REC} =  29, 
+{\bfseries BINDING} =  30, 
+{\bfseries FCN\_\-FORM} =  31, 
+{\bfseries EMPTY\_\-BRACKET} =  32, 
+\par
+{\bfseries COMMA} =  33, 
+{\bfseries LET} =  34, 
+{\bfseries IDENTIFIER} =  35, 
+{\bfseries STRING} =  36, 
+\par
+{\bfseries INTEGER} =  37, 
+{\bfseries YSTAR} =  38, 
+{\bfseries LAMBDA} =  1, 
+{\bfseries WHERE} =  2, 
+\par
+{\bfseries TAU} =  3, 
+{\bfseries AUG} =  4, 
+{\bfseries TERNARY} =  5, 
+{\bfseries OR} =  6, 
+\par
+{\bfseries AND\_\-LOGICAL} =  7, 
+{\bfseries NOT} =  8, 
+{\bfseries GR} =  9, 
+{\bfseries GE} =  10, 
+\par
+{\bfseries LS} =  11, 
+{\bfseries LE} =  12, 
+{\bfseries EQ} =  13, 
+{\bfseries NE} =  14, 
+\par
+{\bfseries ADD} =  15, 
+{\bfseries SUBTRACT} =  16, 
+{\bfseries NEG} =  17, 
+{\bfseries MULTIPLY} =  18, 
+\par
+{\bfseries DIVIDE} =  19, 
+{\bfseries POWER} =  20, 
+{\bfseries AT} =  21, 
+{\bfseries GAMMA} =  22, 
+\par
+{\bfseries TRUE} =  23, 
+{\bfseries FALSE} =  24, 
+{\bfseries NIL} =  25, 
+{\bfseries DUMMY} =  26, 
+\par
+{\bfseries WITHIN} =  27, 
+{\bfseries AND} =  28, 
+{\bfseries REC} =  29, 
+{\bfseries BINDING} =  30, 
+\par
+{\bfseries FCN\_\-FORM} =  31, 
+{\bfseries EMPTY\_\-BRACKET} =  32, 
+{\bfseries COMMA} =  33, 
+{\bfseries LET} =  34, 
+\par
+{\bfseries IDENTIFIER} =  35, 
+{\bfseries STRING} =  36, 
+{\bfseries INTEGER} =  37, 
+{\bfseries YSTAR} =  38
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classTreeNode_a9264936a4297ce3bc1e475cd5d34abb2}{
+void {\bfseries flatten} (\hyperlink{classControl}{Control} $\ast$, vector$<$ \hyperlink{classControl}{Control} $\ast$ $>$ $\ast$)}
+\label{classTreeNode_a9264936a4297ce3bc1e475cd5d34abb2}
+
+\item 
+\hypertarget{classTreeNode_a152c696622ade36c55d67bc91d90ca3c}{
+{\bfseries TreeNode} (string val, Type type)}
+\label{classTreeNode_a152c696622ade36c55d67bc91d90ca3c}
+
+\item 
+\hypertarget{classTreeNode_afa7f9a80b13cd5afe537c35814711c30}{
+{\bfseries TreeNode} (Type type)}
+\label{classTreeNode_afa7f9a80b13cd5afe537c35814711c30}
+
+\item 
+\hypertarget{classTreeNode_a936eef32fb2f710d99b8bffd34bc79d4}{
+void {\bfseries pretty\_\-print} ()}
+\label{classTreeNode_a936eef32fb2f710d99b8bffd34bc79d4}
+
+\item 
+\hypertarget{classTreeNode_a7423ad7dc974bf8eb4eb30135db9af77}{
+string {\bfseries to\_\-s} ()}
+\label{classTreeNode_a7423ad7dc974bf8eb4eb30135db9af77}
+
+\item 
+\hypertarget{classTreeNode_a27260fe76abb7e1020b5bfa1dfdf4009}{
+void {\bfseries standardize} ()}
+\label{classTreeNode_a27260fe76abb7e1020b5bfa1dfdf4009}
+
+\item 
+\hypertarget{classTreeNode_aaea867c260693397308d4b687cf64792}{
+void {\bfseries add\_\-child} (\hyperlink{classTreeNode}{TreeNode} $\ast$child)}
+\label{classTreeNode_aaea867c260693397308d4b687cf64792}
+
+\item 
+\hypertarget{classTreeNode_a152c696622ade36c55d67bc91d90ca3c}{
+{\bfseries TreeNode} (string val, Type type)}
+\label{classTreeNode_a152c696622ade36c55d67bc91d90ca3c}
+
+\item 
+\hypertarget{classTreeNode_afa7f9a80b13cd5afe537c35814711c30}{
+{\bfseries TreeNode} (Type type)}
+\label{classTreeNode_afa7f9a80b13cd5afe537c35814711c30}
+
+\item 
+\hypertarget{classTreeNode_ac3d75e2ad11af5d1f4cc4cb30894fd8e}{
+void {\bfseries pretty\_\-print} () const }
+\label{classTreeNode_ac3d75e2ad11af5d1f4cc4cb30894fd8e}
+
+\item 
+\hypertarget{classTreeNode_adae5bb915edb3473cf0972d68f3295f6}{
+string {\bfseries to\_\-s} () const }
+\label{classTreeNode_adae5bb915edb3473cf0972d68f3295f6}
+
+\item 
+\hypertarget{classTreeNode_a27260fe76abb7e1020b5bfa1dfdf4009}{
+void {\bfseries standardize} ()}
+\label{classTreeNode_a27260fe76abb7e1020b5bfa1dfdf4009}
+
+\item 
+\hypertarget{classTreeNode_a6b1c9937781afd0acae55b610a5c327c}{
+void {\bfseries addChild} (\hyperlink{classTreeNode}{TreeNode} $\ast$child)}
+\label{classTreeNode_a6b1c9937781afd0acae55b610a5c327c}
+
+\item 
+\hypertarget{classTreeNode_ac14a2db6f68bd12c20f6db07ade38ef6}{
+string {\bfseries value} () const }
+\label{classTreeNode_ac14a2db6f68bd12c20f6db07ade38ef6}
+
+\item 
+\hypertarget{classTreeNode_a3500836ee05fdd85cd8da6958bc6fbca}{
+Type {\bfseries type} () const }
+\label{classTreeNode_a3500836ee05fdd85cd8da6958bc6fbca}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classTreeNode_ae819221ffd96ae18136f77874c675857}{
+\hyperlink{classTreeNode}{TreeNode} $\ast$ {\bfseries lft}}
+\label{classTreeNode_ae819221ffd96ae18136f77874c675857}
+
+\item 
+\hypertarget{classTreeNode_acc03d4e3a1778622bdd8f8d8cba44473}{
+\hyperlink{classTreeNode}{TreeNode} $\ast$ {\bfseries rgt}}
+\label{classTreeNode_acc03d4e3a1778622bdd8f8d8cba44473}
+
+\item 
+\hypertarget{classTreeNode_afc81c4758825acfd670fc5a1f51eb2e8}{
+string {\bfseries \_\-value}}
+\label{classTreeNode_afc81c4758825acfd670fc5a1f51eb2e8}
+
+\item 
+\hypertarget{classTreeNode_a7f16a3f7a36197c80e138a41a20c8d00}{
+Type {\bfseries \_\-type}}
+\label{classTreeNode_a7f16a3f7a36197c80e138a41a20c8d00}
+
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files:\begin{DoxyCompactItemize}
+\item 
+naray\_\-tree.h\item 
+TreeNode.h\item 
+TreeNode.c++\end{DoxyCompactItemize}

@@ -1,0 +1,172 @@
+\hypertarget{classControl}{
+\section{Control Class Reference}
+\label{classControl}\index{Control@{Control}}
+}
+
+
+Collaboration diagram for Control:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=178pt]{classControl__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum {\bfseries Type} \{ \par
+{\bfseries ENV} =  1, 
+{\bfseries DELTA} =  2, 
+{\bfseries IDENTIFIER} =  3, 
+{\bfseries LAMBDA} =  4, 
+\par
+{\bfseries GAMMA} =  5, 
+{\bfseries AUG} =  6, 
+{\bfseries BETA} =  7, 
+{\bfseries OR} =  8, 
+\par
+{\bfseries AND\_\-LOGICAL} =  9, 
+{\bfseries NOT} =  10, 
+{\bfseries GR} =  11, 
+{\bfseries GE} =  12, 
+\par
+{\bfseries LS} =  13, 
+{\bfseries LE} =  14, 
+{\bfseries EQ} =  15, 
+{\bfseries NE} =  16, 
+\par
+{\bfseries ADD} =  17, 
+{\bfseries SUBTRACT} =  18, 
+{\bfseries NEG} =  19, 
+{\bfseries MULTIPLY} =  20, 
+\par
+{\bfseries DIVIDE} =  21, 
+{\bfseries EXP} =  22, 
+{\bfseries AT} =  23, 
+{\bfseries TRUE} =  24, 
+\par
+{\bfseries FALSE} =  25, 
+{\bfseries NIL} =  26, 
+{\bfseries DUMMY} =  27, 
+{\bfseries YSTAR} =  28, 
+\par
+{\bfseries ETA} =  29, 
+{\bfseries TAU} =  30, 
+{\bfseries STRING} =  31, 
+{\bfseries INTEGER} =  32, 
+\par
+{\bfseries TUPLE} =  33
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classControl_adb66fdbee92286e1229ca609e545cc4d}{
+void {\bfseries add\_\-control} (int, string, vector$<$ string $>$ $\ast$, \hyperlink{classControl}{Control} $\ast$, int)}
+\label{classControl_adb66fdbee92286e1229ca609e545cc4d}
+
+\item 
+\hypertarget{classControl_a253c2963cf1561f52e3212a2a91dd09a}{
+void {\bfseries pretty\_\-print} ()}
+\label{classControl_a253c2963cf1561f52e3212a2a91dd09a}
+
+\item 
+\hypertarget{classControl_a4c41c3158d8913e39e10f207d59592ff}{
+string {\bfseries to\_\-s} ()}
+\label{classControl_a4c41c3158d8913e39e10f207d59592ff}
+
+\item 
+\hypertarget{classControl_a578b3b8a92a99a8924bbaaa35765caa6}{
+{\bfseries Control} (\hyperlink{classControl}{Control} $\ast$cntrl)}
+\label{classControl_a578b3b8a92a99a8924bbaaa35765caa6}
+
+\item 
+\hypertarget{classControl_aed0474eda3fbba2470cfdd5865cdf95e}{
+{\bfseries Control} (Control::Type type, int index)}
+\label{classControl_aed0474eda3fbba2470cfdd5865cdf95e}
+
+\item 
+\hypertarget{classControl_a6f035fbbd272ba6a877554cb9c46846b}{
+{\bfseries Control} (Control::Type type, vector$<$ string $>$ $\ast$variables, \hyperlink{classControl}{Control} $\ast$del\_\-ptr, int delta\_\-index)}
+\label{classControl_a6f035fbbd272ba6a877554cb9c46846b}
+
+\item 
+\hypertarget{classControl_ac37be7f2ad830c2a56337ae86e8a8e4e}{
+{\bfseries Control} (Control::Type type, int index, bool watever)}
+\label{classControl_ac37be7f2ad830c2a56337ae86e8a8e4e}
+
+\item 
+\hypertarget{classControl_af4d697c95ee5886169013e12ef016f34}{
+{\bfseries Control} (string var\_\-value, Control::Type type)}
+\label{classControl_af4d697c95ee5886169013e12ef016f34}
+
+\item 
+\hypertarget{classControl_a2b72ec8881d3e7261feb61999b5ea8f2}{
+{\bfseries Control} (Control::Type type, string value)}
+\label{classControl_a2b72ec8881d3e7261feb61999b5ea8f2}
+
+\item 
+\hypertarget{classControl_ad6aff5424c3c8757ff944e82811bd263}{
+{\bfseries Control} (Control::Type type)}
+\label{classControl_ad6aff5424c3c8757ff944e82811bd263}
+
+\item 
+\hypertarget{classControl_a29657151fef124d4d312f0b7802d8456}{
+Type {\bfseries type} ()}
+\label{classControl_a29657151fef124d4d312f0b7802d8456}
+
+\item 
+\hypertarget{classControl_a211f56b0c94aae1ada32afff1c0b1988}{
+string {\bfseries value} ()}
+\label{classControl_a211f56b0c94aae1ada32afff1c0b1988}
+
+\item 
+\hypertarget{classControl_a9421d4639d1f2d15c512611f762db55b}{
+int {\bfseries index} ()}
+\label{classControl_a9421d4639d1f2d15c512611f762db55b}
+
+\item 
+\hypertarget{classControl_a68fb29afe121b4b000bbac2d4dfe7040}{
+void {\bfseries set\_\-linked\_\-env\_\-id} (int id)}
+\label{classControl_a68fb29afe121b4b000bbac2d4dfe7040}
+
+\item 
+\hypertarget{classControl_a9e04b57a5854cb28af2318f59ec12fe4}{
+int {\bfseries linked\_\-env\_\-id} ()}
+\label{classControl_a9e04b57a5854cb28af2318f59ec12fe4}
+
+\item 
+\hypertarget{classControl_a96b36fd85014457b43388b84dd125878}{
+void {\bfseries set\_\-type} (Type type)}
+\label{classControl_a96b36fd85014457b43388b84dd125878}
+
+\item 
+\hypertarget{classControl_a36e7d957ed52b30ace86d16315004284}{
+void {\bfseries set\_\-value} (string value)}
+\label{classControl_a36e7d957ed52b30ace86d16315004284}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classControl_a789fac1709329ea69d67ab52f9be7ca7}{
+vector$<$ \hyperlink{classControl}{Control} $\ast$ $>$ $\ast$ {\bfseries \_\-control\_\-struct}}
+\label{classControl_a789fac1709329ea69d67ab52f9be7ca7}
+
+\item 
+\hypertarget{classControl_afc67e4eb74a62032e271646d3b91ebf9}{
+vector$<$ string $>$ {\bfseries \_\-variables}}
+\label{classControl_afc67e4eb74a62032e271646d3b91ebf9}
+
+\item 
+\hypertarget{classControl_ad761965741b7aef5f3918d4815e9b4cb}{
+vector$<$ \hyperlink{classControl}{Control} $\ast$ $>$ {\bfseries \_\-tuples}}
+\label{classControl_ad761965741b7aef5f3918d4815e9b4cb}
+
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files:\begin{DoxyCompactItemize}
+\item 
+control.h\item 
+control.c++\end{DoxyCompactItemize}
