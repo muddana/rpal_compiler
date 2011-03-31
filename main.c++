@@ -4,10 +4,8 @@
 #include "token.c++"
 #include "lexer.c++"
 
-
-#include "control.c++"
-
 #include "TreeNode.c++"
+#include "control.c++"
 
 #include "parser.c++"
 #include "environment.c++"

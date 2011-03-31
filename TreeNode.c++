@@ -1,4 +1,4 @@
-
+#include "TreeNode.h"
 
 //pre-order treversal first root then the left and right child recursively
 void TreeNode::pretty_print() const{

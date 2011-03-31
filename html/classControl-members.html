@@ -54,7 +54,7 @@ This is the complete list of members for <a class="el" href="classControl.html">
   <tr bgcolor="#f0f0f0"><td><b>_tuples</b> (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>_variables</b> (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>ADD</b> enum value (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
-  <tr bgcolor="#f0f0f0"><td><b>add_control</b>(int, string, vector&lt; string &gt; *, Control *, int) (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
+  <tr bgcolor="#f0f0f0"><td><b>add_control</b>(TreeNode *node, int, string, vector&lt; string &gt; *, Control *, int) (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>AND_LOGICAL</b> enum value (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>AT</b> enum value (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>AUG</b> enum value (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
@@ -78,7 +78,6 @@ This is the complete list of members for <a class="el" href="classControl.html">
   <tr bgcolor="#f0f0f0"><td><b>GAMMA</b> enum value (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>GE</b> enum value (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>GR</b> enum value (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
-  <tr bgcolor="#f0f0f0"><td><b>IDENTIFIER</b> enum value (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>index</b>() (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>INTEGER</b> enum value (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>LAMBDA</b> enum value (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
@@ -86,6 +85,7 @@ This is the complete list of members for <a class="el" href="classControl.html">
   <tr bgcolor="#f0f0f0"><td><b>linked_env_id</b>() (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>LS</b> enum value (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>MULTIPLY</b> enum value (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
+  <tr bgcolor="#f0f0f0"><td><b>NAME</b> enum value (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>NE</b> enum value (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>NEG</b> enum value (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>NIL</b> enum value (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
@@ -101,8 +101,8 @@ This is the complete list of members for <a class="el" href="classControl.html">
   <tr bgcolor="#f0f0f0"><td><b>to_s</b>() (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>TRUE</b> enum value (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>TUPLE</b> enum value (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
-  <tr bgcolor="#f0f0f0"><td><b>Type</b> enum name (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>type</b>() (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
+  <tr bgcolor="#f0f0f0"><td><b>Type</b> enum name (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>value</b>() (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>YSTAR</b> enum value (defined in <a class="el" href="classControl.html">Control</a>)</td><td><a class="el" href="classControl.html">Control</a></td><td></td></tr>
 </table></div>
@@ -120,7 +120,7 @@ This is the complete list of members for <a class="el" href="classControl.html">
 </iframe>
 </div>
 
-<hr class="footer"/><address class="footer"><small>Generated on Tue Mar 29 2011 21:40:55 by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Wed Mar 30 2011 15:19:18 by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

@@ -49,13 +49,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="contents">
 <div class="fragment"><pre class="fragment"><a name="l00001"></a><a class="code" href="classControl.html">00001</a> <span class="keyword">class </span><a class="code" href="classControl.html">Control</a>{
 <a name="l00002"></a>00002 <span class="keyword">public</span>:
-<a name="l00003"></a>00003   <span class="keywordtype">void</span> add_control(<span class="keywordtype">int</span> , <span class="keywordtype">string</span>,  vector&lt;string&gt; *, <a class="code" href="classControl.html">Control</a>*, <span class="keywordtype">int</span>);  <span class="comment">// why not pass the whole node(pointer) itself</span>
+<a name="l00003"></a>00003   <span class="keywordtype">void</span> add_control(<a class="code" href="classTreeNode.html">TreeNode</a>* node, <span class="keywordtype">int</span> , <span class="keywordtype">string</span>,  vector&lt;string&gt; *, <a class="code" href="classControl.html">Control</a>*, <span class="keywordtype">int</span>);  <span class="comment">// why not pass the whole node(pointer) itself</span>
 <a name="l00004"></a>00004   <span class="keywordtype">void</span> pretty_print();
 <a name="l00005"></a>00005 
 <a name="l00006"></a>00006   <span class="keyword">enum</span> Type{
 <a name="l00007"></a>00007     ENV = 1 ,
 <a name="l00008"></a>00008     DELTA = 2 ,
-<a name="l00009"></a>00009     IDENTIFIER = 3 ,
+<a name="l00009"></a>00009     NAME = 3 ,
 <a name="l00010"></a>00010     LAMBDA = 4 ,
 <a name="l00011"></a>00011     GAMMA = 5 ,
 <a name="l00012"></a>00012     AUG = 6 ,
@@ -152,7 +152,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
-<hr class="footer"/><address class="footer"><small>Generated on Tue Mar 29 2011 21:40:55 by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Wed Mar 30 2011 15:19:18 by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

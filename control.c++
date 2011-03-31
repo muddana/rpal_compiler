@@ -1,6 +1,4 @@
-#include "control.h"
-
-#include "TreeNode.h"
+ #include "control.h"
 
 /*enum Control::Type{
     ENV = 1 ,
@@ -268,9 +266,8 @@ void Control::pretty_print(){
   cout << endl;
 };
 
-
-//TODO: why not pass the whole treenode itself?
-void Control::add_control(int type, string value, vector<string> *variables, Control* del_ptr, int deltas_size){ 
+/*
+void Control::add_control(TreeNode* node, int type, string value, vector<string> *variables, Control* del_ptr, int deltas_size){ 
     //has to store appropriate control depeneding on the type and value of the tree node
 
   //cout << "TreeNode " << node->to_s() << " : "  << node->value()<< endl;
@@ -369,5 +366,107 @@ void Control::add_control(int type, string value, vector<string> *variables, Con
   _control_struct->push_back(temp);
   //cout << "added control " << temp->to_s() << " : "  << temp->value()<< endl;
 };
+*/
+
+void Control::add_control(TreeNode* node, int type, string value, vector<string> *variables, Control* del_ptr, int deltas_size){ 
+    //has to store appropriate control depeneding on the type and value of the tree node
+
+  //cout << "TreeNode " << node->to_s() << " : "  << node->value()<< endl;
+
+  int tau_count;
+  Control *temp = NULL;
+  switch(node->type()){
+  case TreeNode::LAMBDA:
+    temp = new Control(Control::LAMBDA, variables, del_ptr, deltas_size-1 );
+    break;
+  case TreeNode::INTEGER:
+    temp = new Control(Control::INTEGER, node->value());
+    break;
+  case TreeNode::MULTIPLY:
+    temp = new Control(Control::MULTIPLY, node->value());
+    break;
+  case TreeNode::ADD:
+    temp = new Control(Control::ADD, node->value());
+    break;
+  case TreeNode::SUBTRACT:
+    temp = new Control(Control::SUBTRACT, node->value());
+    break;
+  case TreeNode::DIVIDE:
+    temp = new Control(Control::DIVIDE, node->value());
+    break;
+  case TreeNode::GAMMA:
+    temp = new Control(Control::GAMMA, node->value());
+    break;
+  case TreeNode::IDENTIFIER:
+    //cout << "adding new identifier control " << value<< endl;
+    temp = new Control(node->value(), Control::NAME);
+    break;
+  case TreeNode::STRING:
+    //cout << " String control of Value is : "<< value << endl;
+    temp = new Control(Control::STRING, node->value().substr(1,node->value().length()-2));
+    break;
+  case TreeNode::TAU:
+    if(variables!=NULL)
+      tau_count = variables->size();
+    else
+      cout << "TAU add_control NULL variables sent!" << endl;
+    temp = new Control(Control::TAU, tau_count, false);
+    break;
+  case TreeNode::AUG:
+    temp = new Control(Control::AUG);
+    break;
+  case TreeNode::NIL:
+    temp = new Control(Control::NIL);
+    break;
+  case TreeNode::YSTAR:
+    temp = new Control(Control::YSTAR);
+    break;
+  case TreeNode::AND_LOGICAL:
+    temp = new Control(Control::AND_LOGICAL);
+    break;
+  case TreeNode::OR:
+    temp = new Control(Control::OR);
+    break;
+  case TreeNode::NE:
+    temp = new Control(Control::NE);
+    break;
+  case TreeNode::EQ:
+    temp = new Control(Control::EQ);
+    break;
+  case TreeNode::LS:
+    temp = new Control(Control::LS);
+    break;
+  case TreeNode::LE:
+    temp = new Control(Control::LE);
+    break;
+  case TreeNode::GR:
+    temp = new Control(Control::GR);
+    break;
+  case TreeNode::GE:
+    temp = new Control(Control::GE);
+    break;
+  case TreeNode::NEG:
+    temp = new Control(Control::NEG);
+    break;
+  case TreeNode::FALSE:
+    temp = new Control(Control::FALSE);
+    break;
+  case TreeNode::TRUE:
+    temp = new Control(Control::TRUE);
+    break;
+  case TreeNode::NOT:
+    temp = new Control(Control::NOT);
+    break;
+  case TreeNode::DUMMY:
+    temp = new Control(Control::DUMMY);
+    break;
+  default:
+    throw RpalError(RpalError::INTERNAL,"UnHandled TreeNode found!?, TreeNode value:" + value + " type:" + itos(type));
+    break;
+  };
+  _control_struct->push_back(temp);
+  //cout << "added control " << temp->to_s() << " : "  << temp->value()<< endl;
+};
+
 
 

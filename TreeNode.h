@@ -13,7 +13,7 @@
 //first child next sibling notation of a n-ry tree
   class TreeNode{
   public:
-    void flatten(Control *, vector<Control *> *);
+    //void flatten(Control *, vector<Control *> *);
 
     enum Type {
       LAMBDA = 1 ,

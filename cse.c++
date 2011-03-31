@@ -63,8 +63,9 @@ private:
   //preparing the control structures and putting the first control structure on the control
   void init_control_stack(TreeNode *root){
     deltas->push_back(root_delta);
-    //treeFlattener(root,root_delta, deltas);
-    root->flatten(root_delta, deltas);
+    treeFlattener(root,root_delta, deltas);
+    //print_deltas();
+    //root->flatten(root_delta, deltas);
     _control.push_back(new Control(Control::ENV, 0, false));
     _stack.push(new Control(Control::ENV, 0, false));
     for(int i=0;i<root_delta->_control_struct->size();i++){
@@ -694,7 +695,7 @@ private:
 };
 
 
-/*void CSE::treeFlattener(TreeNode* node, Control *delta,vector<Control *> *deltas){
+void CSE::treeFlattener(TreeNode* node, Control *delta,vector<Control *> *deltas){
 
   //used to handle the recursive retrieval of delta and to restore the delta after the new delta is handled
   Control *temp_del_ptr = NULL;
@@ -747,7 +748,7 @@ private:
 	  temp = temp->rgt;
 	}
       }
-      delta_then->add_control(node, node->lft->rgt->_type, node->lft->rgt->_value, temp_variables, delta_then, deltas->size());
+      delta_then->add_control(node->lft->rgt, node->lft->rgt->_type, node->lft->rgt->_value, temp_variables, delta_then, deltas->size());
       if(node->lft->rgt->lft != NULL)
 	treeFlattener(node->lft->rgt->lft, delta_then, deltas);
     }
@@ -769,14 +770,14 @@ private:
 	  temp = temp->rgt;
 	}
       }
-      delta_else->add_control(node, node->lft->rgt->rgt->_type, node->lft->rgt->rgt->_value, temp_variables, delta_else, deltas->size());
+      delta_else->add_control(node->lft->rgt->rgt, node->lft->rgt->rgt->_type, node->lft->rgt->rgt->_value, temp_variables, delta_else, deltas->size());
       if(node->lft->rgt->rgt->lft != NULL)
 	treeFlattener(node->lft->rgt->rgt->lft,delta_else, deltas);      
     };
     
     Control *beta = new Control(Control::BETA);
     delta->_control_struct->push_back(new Control(Control::BETA, "beta"));
-    delta->add_control(node, node->lft->_type, node->lft->_value, NULL, NULL, deltas->size());
+    delta->add_control(node->lft, node->lft->_type, node->lft->_value, NULL, NULL, deltas->size());
     if(node->lft->lft != NULL)
       treeFlattener(node->lft->lft, delta, deltas);
   }
@@ -803,9 +804,9 @@ private:
     };
   };
 };
-*/
 
 
+/*
 void TreeNode::flatten(Control *delta,vector<Control *> *deltas){
 
   //used to handle the recursive retrieval of delta and to restore the delta after the new delta is handled
@@ -917,3 +918,4 @@ void TreeNode::flatten(Control *delta,vector<Control *> *deltas){
     };
   };
 };
+*/
